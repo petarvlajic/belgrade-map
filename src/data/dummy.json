@@ -1,0 +1,82 @@
+[
+  {
+    "id": 1,
+    "gpsx": 44.8268096,
+    "gpsy": 20.4532741,
+    "zone": "A",
+    "status": 1,
+    "name": "Kalemegdan (Donji Grad)"
+  },
+  {
+    "id": 2,
+    "gpsx": 44.8259220447,
+    "gpsy": 20.4552468606,
+    "zone": "A",
+    "status": 2,
+    "name": "Tadeuša Košćuška"
+  },
+  {
+    "id": 3,
+    "gpsx": 44.8261773059,
+    "gpsy": 20.4550793528,
+    "zone": "A",
+    "status": 1,
+    "name": "Tadeuša Košćuška"
+  },
+  {
+    "id": 4,
+    "gpsx": 44.820227965,
+    "gpsy": 20.4532303423,
+    "zone": "A",
+    "status": 2,
+    "name": "Kalemegdan"
+  },
+  {
+    "id": 5,
+    "gpsx": 44.8208843,
+    "gpsy": 20.4540765,
+    "zone": "A",
+    "status": 1,
+    "name": "Kalemegdan"
+  },
+  {
+    "id": 6,
+    "gpsx": 44.81868572,
+    "gpsy": 20.449443994,
+    "zone": "A",
+    "status": 2,
+    "name": "Pristanište Ka Bloku 45"
+  },
+  {
+    "id": 7,
+    "gpsx": 44.8190021156,
+    "gpsy": 20.449496002,
+    "zone": "A",
+    "status": 1,
+    "name": "Pristanište"
+  },
+  {
+    "id": 8,
+    "gpsx": 44.8143033135,
+    "gpsy": 20.4511871424,
+    "zone": "A",
+    "status": 2,
+    "name": "Brankov most"
+  },
+  {
+    "id": 9,
+    "gpsx": 44.8143384093,
+    "gpsy": 20.4513017141,
+    "zone": "A",
+    "status": 1,
+    "name": "Brankov most"
+  },
+  {
+    "id": 10,
+    "gpsx": 44.8107891758,
+    "gpsy": 20.4539891189,
+    "zone": "A",
+    "status": 2,
+    "name": "Ekonomski fakultet"
+  }
+]
