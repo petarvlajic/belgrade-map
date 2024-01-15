@@ -3,7 +3,7 @@ interface ApiResponse<T> {
   error?: string;
 }
 
-const apiUrl = "http://alma.sodalis.rs/api";
+const apiUrl = "http://localhost:5000/api";
 
 const fetchService = {
   get: async <T>(endpoint: string): Promise<ApiResponse<T>> => {
