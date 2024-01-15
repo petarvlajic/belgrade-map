@@ -6,3 +6,10 @@ export interface MarkerType {
   status: number;
   name: string;
 }
+
+export interface MarkerHistory {
+  description: string;
+  time: Date;
+  username: string;
+  type: string;
+}

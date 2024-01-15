@@ -5,11 +5,10 @@ import {
   MarkerClusterer,
   useLoadScript,
 } from "@react-google-maps/api";
-import JsonData from "../../data/dummy.json";
-import { useEffect, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import fetchService from "../../services/api";
 import { center, mapContainerStyle, mapOptions } from "./const";
-import { MarkerType } from "../../types/Marker";
+import { MarkerHistory, MarkerType } from "../../types/Marker";
 
 const getPinColor = (status: number): string => {
   switch (status) {
@@ -18,31 +17,40 @@ const getPinColor = (status: number): string => {
     case 2:
       return "red";
     default:
-      return "error";
+      return "blue";
   }
 };
 
-const Map = () => {
+interface Props {
+  markers: MarkerType[] | undefined | null;
+}
+
+const Map: FC<Props> = ({ markers }) => {
   const [isInfoWindowOpen, setIsInfoWindowOpen] = useState<boolean>(false);
   const [pinInfoDetails, setPinInfoDetails] = useState<MarkerType | null>(null);
+  const [pinHistoryDetails, setPinHistoryDetails] = useState<
+    MarkerHistory[] | null
+  >(null);
+
   const { isLoaded, loadError } = useLoadScript({
     googleMapsApiKey: "AIzaSyDFChsu6DMeZSUk06u1WeXnJqkCXhYnENc",
   });
 
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchPinDetails = async () => {
+      if (!pinInfoDetails) return;
       try {
-        const { data } = await fetchService.get<MarkerType[]>(
-          "stations?key=lkajdshfadjskh1234jkahsdfl23319807"
+        const { data } = await fetchService.get<MarkerHistory[]>(
+          `station-history/${pinInfoDetails?.id}`
         );
-        console.log(data);
+        setPinHistoryDetails(data);
       } catch (error) {
         console.log("An unexpected error occurred.");
       }
     };
 
-    fetchData();
-  }, []);
+    fetchPinDetails();
+  }, [pinInfoDetails]);
 
   if (loadError) {
     return <div>Error loading maps</div>;
@@ -57,15 +65,16 @@ const Map = () => {
     setIsInfoWindowOpen(true);
   };
 
-  const handleZoomChanged = () => {
-    if (!pinInfoDetails) return;
-    console.log(pinInfoDetails);
+  const handleStationFunction = async (type: "SLP" | "RBT" | "ON") => {
+    const data = new FormData();
+    data.append("id", `${pinInfoDetails?.id}`);
+    data.append("command", type);
+    await fetchService.post<any>("change-command", data);
   };
 
   return (
     <GoogleMap
       mapContainerStyle={mapContainerStyle}
-      onZoomChanged={handleZoomChanged}
       zoom={12}
       center={center}
       options={mapOptions}
@@ -78,7 +87,7 @@ const Map = () => {
       >
         {(clusterer) => (
           <div>
-            {JsonData.map((pin) => (
+            {markers?.map((pin) => (
               <Marker
                 key={pin.id}
                 position={{ lat: pin.gpsx, lng: pin.gpsy }}
@@ -105,9 +114,73 @@ const Map = () => {
           onCloseClick={() => setIsInfoWindowOpen(false)}
         >
           <div className="super">
-            <h2>{pinInfoDetails?.name}</h2>
-            <p>Zona: {pinInfoDetails?.zone}</p>
-            <p>Status: {pinInfoDetails?.status}</p>
+            <ul>
+              <li className="flex gap-2">
+                <p className="font-semibold">ID:</p>
+                <p>{pinInfoDetails?.id}</p>
+              </li>
+              <li className="flex gap-2">
+                <p className="font-semibold">Naziv stajalista:</p>
+                <p>{pinInfoDetails?.name}</p>
+              </li>
+              <li className="flex gap-2">
+                <p className="font-semibold">Zona:</p>
+                <p>{pinInfoDetails?.zone}</p>
+              </li>
+              <li className="flex gap-2">
+                <p className="font-semibold">Status</p>
+                <p>{pinInfoDetails?.status}</p>
+              </li>
+            </ul>
+            {pinHistoryDetails?.length !== 0 && (
+              <table className=" border-blue-500 border-collapse">
+                <thead>
+                  <tr>
+                    <th>Status</th>
+                    <th>Username</th>
+                    <th>Date</th>
+                    <th>Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {pinHistoryDetails &&
+                    pinHistoryDetails?.map((action) => (
+                      <tr
+                        className={`border text-center ${
+                          action.type == "1"
+                            ? "bg-green-500 text-black"
+                            : "bg-red-500 text-white"
+                        }`}
+                      >
+                        <td>{action.type}</td>
+                        <td>{action.username}</td>
+                        <td>{String(action.time)}</td>
+                        <td>{action.description}</td>
+                      </tr>
+                    ))}
+                </tbody>
+              </table>
+            )}
+            <div className="flex gap-3 justify-center my-3">
+              <button
+                className="bg-green-500 rounded-md p-3 text-white font-bold"
+                onClick={() => handleStationFunction("ON")}
+              >
+                Ukljuci
+              </button>
+              <button
+                className="bg-red-500 rounded-md p-3 text-white font-bold"
+                onClick={() => handleStationFunction("SLP")}
+              >
+                Iskljuci
+              </button>
+              <button
+                className="bg-blue-500 rounded-md p-3 text-white font-bold"
+                onClick={() => handleStationFunction("RBT")}
+              >
+                Restart
+              </button>
+            </div>
           </div>
         </InfoWindow>
       )}

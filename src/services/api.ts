@@ -9,7 +9,11 @@ const fetchService = {
   get: async <T>(endpoint: string): Promise<ApiResponse<T>> => {
     try {
       const response = await fetch(`${apiUrl}/${endpoint}`, {
-        headers: { cors: "no-cors", "Access-Control-Allow-Origin": "no-cors" },
+        headers: {
+          cors: "no-cors",
+          "Access-Control-Allow-Origin": "no-cors",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
       });
       const data = await response.json();
       return { data };
@@ -18,14 +22,17 @@ const fetchService = {
     }
   },
 
-  post: async <T>(endpoint: string, body: object): Promise<ApiResponse<T>> => {
+  post: async <T>(
+    endpoint: string,
+    body: BodyInit
+  ): Promise<ApiResponse<T>> => {
     try {
       const response = await fetch(`${apiUrl}/${endpoint}`, {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
-        body: JSON.stringify(body),
+        body: body,
       });
 
       const data = await response.json();

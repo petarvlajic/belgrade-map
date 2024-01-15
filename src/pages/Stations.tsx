@@ -1,25 +1,74 @@
+import { useEffect, useState } from "react";
 import Map from "../components/Map";
+import parseJwt from "../lib/parseJwt";
+import fetchService from "../services/api";
+import { MarkerType } from "../types/Marker";
 
 const Stations = () => {
+  const [isEditor, setIsEditor] = useState<boolean | undefined>(false);
+
+  const [markers, setMarkers] = useState<MarkerType[] | undefined | null>(
+    undefined
+  );
+
+  useEffect(() => {
+    setIsEditor(parseJwt(localStorage.getItem("token")));
+    const fetchData = async () => {
+      try {
+        const { data } = await fetchService.get<MarkerType[]>("stations");
+        setMarkers(data);
+      } catch (error) {
+        console.log("An unexpected error occurred.");
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  const fetchOtherStations = async (type: string) => {
+    const { data } = await fetchService.get<MarkerType[]>(type);
+
+    if (data && markers) {
+      console.log(data);
+      setMarkers(type === "stations" ? data : [...markers, ...data]);
+    }
+  };
+
   return (
     <div className="container mx-auto  px-4">
-      <div className="flex ">
-        <div className="w-1/4  flex flex-col gap-5 px-16  justify-center text-center">
-          <button className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
-            Button 1
-          </button>
-          <button className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
-            Button 2
-          </button>
-          <button className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
-            Button 3
-          </button>
-          <button className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
-            Button 4
-          </button>
-        </div>
-        <div className="w-3/4">
-          <Map />
+      <div className="flex xl:flex-row md:flex-col">
+        <div className="md:w-full xl:order-1">
+          <Map markers={markers} />
+          {isEditor && (
+            <div className="justify-center  mt-4 flex gap-3 text-white items-center">
+              <button
+                className="rounded-xl py-2 px-4 border"
+                onClick={() => window.location.reload()}
+              >
+                Restart
+              </button>
+
+              <label htmlFor="prikaziStanice">
+                <input
+                  type="radio"
+                  name="prikaziStanice"
+                  id=""
+                  onClick={() => fetchOtherStations("planed-stations")}
+                />
+                Planirane stanice
+              </label>
+
+              <label htmlFor="prikaziStanice">
+                <input
+                  type="radio"
+                  name="prikaziStanice"
+                  id=""
+                  onClick={() => fetchOtherStations("wthout-plan-stations")}
+                />
+                Neplanirane stanice
+              </label>
+            </div>
+          )}
         </div>
       </div>
     </div>
