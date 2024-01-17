@@ -3,7 +3,7 @@ interface ApiResponse<T> {
   error?: string;
 }
 
-const apiUrl = `${location.protocol}//${location.host}/api`;
+const apiUrl = `${location.protocol}//api.${location.host}/api`;
 
 const fetchService = {
   get: async <T>(endpoint: string): Promise<ApiResponse<T>> => {

@@ -23,9 +23,10 @@ const getPinColor = (status: number): string => {
 
 interface Props {
   markers: MarkerType[] | undefined | null;
+  searchStation: MarkerType | undefined | null;
 }
 
-const Map: FC<Props> = ({ markers }) => {
+const Map: FC<Props> = ({ markers, searchStation }) => {
   const [isInfoWindowOpen, setIsInfoWindowOpen] = useState<boolean>(false);
   const [pinInfoDetails, setPinInfoDetails] = useState<MarkerType | null>(null);
   const [pinHistoryDetails, setPinHistoryDetails] = useState<
@@ -35,6 +36,10 @@ const Map: FC<Props> = ({ markers }) => {
   const { isLoaded, loadError } = useLoadScript({
     googleMapsApiKey: "AIzaSyDFChsu6DMeZSUk06u1WeXnJqkCXhYnENc",
   });
+
+  useEffect(() => {
+    console.log(searchStation);
+  }, [searchStation]);
 
   useEffect(() => {
     const fetchPinDetails = async () => {
@@ -75,8 +80,12 @@ const Map: FC<Props> = ({ markers }) => {
   return (
     <GoogleMap
       mapContainerStyle={mapContainerStyle}
-      zoom={12}
-      center={center}
+      zoom={searchStation ? 20 : 12}
+      center={
+        searchStation
+          ? { lat: searchStation.gpsx, lng: searchStation.gpsy }
+          : center
+      }
       options={mapOptions}
     >
       <MarkerClusterer
@@ -84,6 +93,7 @@ const Map: FC<Props> = ({ markers }) => {
         minimumClusterSize={2}
         averageCenter={true}
         gridSize={50}
+        maxZoom={15}
       >
         {(clusterer) => (
           <div>
@@ -92,6 +102,10 @@ const Map: FC<Props> = ({ markers }) => {
                 key={pin.id}
                 position={{ lat: pin.gpsx, lng: pin.gpsy }}
                 onClick={() => handlePinClick(pin)}
+                label={{
+                  text: pin.id.toString(),
+                  className: "mb-12",
+                }}
                 icon={{
                   url: `http://maps.google.com/mapfiles/ms/icons/${getPinColor(
                     pin.status
