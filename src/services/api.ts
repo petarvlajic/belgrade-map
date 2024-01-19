@@ -1,9 +1,10 @@
 interface ApiResponse<T> {
   data: T | null;
   error?: string;
+  status?: number;
 }
 
-const apiUrl = `${location.protocol}//api.${location.host}/api`;
+const apiUrl = `${location.protocol}//api.alma.sodalis.rs/api`;
 
 const fetchService = {
   get: async <T>(endpoint: string): Promise<ApiResponse<T>> => {
@@ -16,9 +17,13 @@ const fetchService = {
         },
       });
       const data = await response.json();
-      return { data };
+      return { data, status: response.status };
     } catch (error) {
-      return { data: null, error: "An error occurred while fetching data." };
+      return {
+        data: null,
+        error: "An error occurred while fetching data.",
+        status: 401,
+      };
     }
   },
 
@@ -36,7 +41,7 @@ const fetchService = {
       });
 
       const data = await response.json();
-      return { data };
+      return { data, status: response.status };
     } catch (error) {
       return { data: null, error: "An error occurred while posting data." };
     }

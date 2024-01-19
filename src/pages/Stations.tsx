@@ -3,10 +3,13 @@ import Map from "../components/Map";
 import parseJwt from "../lib/parseJwt";
 import fetchService from "../services/api";
 import { MarkerType } from "../types/Marker";
+import Counter from "../components/Counter";
+import ModalForm from "../components/AddPinForm";
+import { useNavigate } from "react-router-dom";
 
 const Stations = () => {
   const [isEditor, setIsEditor] = useState<boolean | undefined>(false);
-
+  const navigate = useNavigate();
   const [markers, setMarkers] = useState<MarkerType[] | undefined | null>(
     undefined
   );
@@ -34,15 +37,33 @@ const Stations = () => {
       }
     };
 
-    fetchData();
-
-    const fetchCount = async () => {
-      const { data } = await fetchService.get<any>("count");
-      console.log(data);
+    const checkJWT = async () => {
+      try {
+        const { status } = await fetchService.get<MarkerType[]>("login/ping");
+        console.log(status);
+        if (status == 401) {
+          console.log("e");
+          navigate("/");
+        }
+      } catch (error) {
+        console.log("An unexpected error occurred.");
+      }
     };
 
-    fetchCount();
+    checkJWT();
+
+    fetchData();
   }, []);
+
+  const [isModalOpen, setModalOpen] = useState(false);
+
+  const openModal = () => {
+    setModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setModalOpen(false);
+  };
 
   const fetchOtherStations = async (type: string) => {
     const { data } = await fetchService.get<MarkerType[]>(type);
@@ -50,10 +71,12 @@ const Stations = () => {
   };
 
   const searchForStation = async () => {
-    const { data } = await fetchService.get<MarkerType[]>(
-      `search/?id=${searchValue}`
-    );
-    data && setSearchStationData(data[0]);
+    if (searchValue) {
+      const { data } = await fetchService.get<MarkerType[]>(
+        `search/?id=${searchValue}`
+      );
+      data && setSearchStationData(data[0]);
+    }
   };
 
   return (
@@ -62,6 +85,15 @@ const Stations = () => {
         <div className="md:w-full xl:order-1">
           <Map markers={markers} searchStation={searchStationData} />
           <div className="justify-center  mt-4 flex gap-3 text-white items-center">
+            <Counter />
+
+            <button
+              onClick={openModal}
+              className="bg-blue-500 text-white px-4 py-2 rounded-md"
+            >
+              Add Location
+            </button>
+            <ModalForm isOpen={isModalOpen} onClose={closeModal} />
             <div className="justify-center  mt-4 flex  text-white items-center">
               <input
                 type="text"
