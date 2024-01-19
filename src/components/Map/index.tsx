@@ -195,6 +195,14 @@ const Map: FC<Props> = ({ markers, searchStation }) => {
                 Restart
               </button>
             </div>
+
+            <a
+              href={`https://www.google.com/maps/place/${pinInfoDetails?.gpsx},${pinInfoDetails?.gpsy}`}
+              target="_blank"
+              className="bg-blue-500 rounded-md p-3 text-white font-bold w-full block text-center"
+            >
+              Putanja
+            </a>
           </div>
         </InfoWindow>
       )}

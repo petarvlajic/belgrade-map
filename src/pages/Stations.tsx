@@ -53,7 +53,7 @@ const Stations = () => {
     checkJWT();
 
     fetchData();
-  }, []);
+  }, [navigate]);
 
   const [isModalOpen, setModalOpen] = useState(false);
 
@@ -82,24 +82,19 @@ const Stations = () => {
   return (
     <div className="container mx-auto  px-4">
       <div className="flex xl:flex-row md:flex-col">
+        <div className="text-white self-end my-6">
+          <Counter />
+        </div>
         <div className="md:w-full xl:order-1">
           <Map markers={markers} searchStation={searchStationData} />
-          <div className="justify-center  mt-4 flex gap-3 text-white items-center">
-            <Counter />
-
-            <button
-              onClick={openModal}
-              className="bg-blue-500 text-white px-4 py-2 rounded-md"
-            >
-              Add Location
-            </button>
-            <ModalForm isOpen={isModalOpen} onClose={closeModal} />
-            <div className="justify-center  mt-4 flex  text-white items-center">
+          <div className="justify-center  mt-4 flex gap-3 text-white ">
+            <div className="justify-center  mt-4 flex  text-white ">
               <input
                 type="text"
                 className="rounded-l-md h-full text-black"
                 onChange={handleSearchInputSearch}
                 value={searchValue}
+                onKeyDown={searchForStation}
               />
               <button
                 className="border py-2 px-4 rounded-r-md"
@@ -114,7 +109,7 @@ const Stations = () => {
                   className="rounded-xl py-2 px-4 border"
                   onClick={() => window.location.reload()}
                 >
-                  Restart
+                  Postavljene stanice
                 </button>
 
                 <label htmlFor="prikaziStanice">
@@ -122,6 +117,7 @@ const Stations = () => {
                     type="radio"
                     name="prikaziStanice"
                     id=""
+                    className="mr-1"
                     onClick={() => fetchOtherStations("planed-stations")}
                   />
                   Planirane stanice
@@ -132,12 +128,27 @@ const Stations = () => {
                     type="radio"
                     name="prikaziStanice"
                     id=""
+                    className="mr-1"
                     onClick={() => fetchOtherStations("wthout-plan-stations")}
                   />
                   Neplanirane stanice
                 </label>
               </div>
             )}
+            <button
+              onClick={openModal}
+              className="bg-blue-500 text-white px-4 py-2 rounded-md"
+            >
+              Add Location
+            </button>
+            <ModalForm isOpen={isModalOpen} onClose={closeModal} />
+
+            <button
+              className="rounded-xl py-2 px-4 border"
+              onClick={() => window.location.reload()}
+            >
+              Restart
+            </button>
           </div>
         </div>
       </div>
