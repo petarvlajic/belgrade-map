@@ -2,9 +2,10 @@ export interface MarkerType {
   id: number;
   gpsx: number;
   gpsy: number;
-  zone: string;
+  zona: string;
   status: number;
   name: string;
+  statusLabel: string;
 }
 
 export interface MarkerHistory {

@@ -21,6 +21,11 @@ import { MarkerHistory, MarkerType } from "../../types/Marker";
 //   }
 // };
 
+interface planStationRes {
+  msg: string;
+  success: string;
+}
+
 interface Props {
   markers: MarkerType[] | undefined | null;
   searchStation: MarkerType | undefined | null;
@@ -75,6 +80,15 @@ const Map: FC<Props> = ({ markers, searchStation }) => {
     data.append("id", `${pinInfoDetails?.id}`);
     data.append("command", type);
     await fetchService.post<any>("change-command", data);
+  };
+
+  const planStation = async () => {
+    const { data } = fetchService.post<planStationRes>(
+      `add-station-to-plan/${pinInfoDetails?.id}`,
+      undefined
+    );
+
+    console.log(data);
   };
 
   return (
@@ -137,11 +151,11 @@ const Map: FC<Props> = ({ markers, searchStation }) => {
               </li>
               <li className="flex gap-2">
                 <p className="font-semibold">Zona:</p>
-                <p>{pinInfoDetails?.zone}</p>
+                <p>{pinInfoDetails?.zona}</p>
               </li>
               <li className="flex gap-2">
                 <p className="font-semibold">Status</p>
-                <p>{pinInfoDetails?.status}</p>
+                <p>{pinInfoDetails?.statusLabel}</p>
               </li>
             </ul>
             {pinHistoryDetails?.length !== 0 && (
@@ -173,26 +187,39 @@ const Map: FC<Props> = ({ markers, searchStation }) => {
                 </tbody>
               </table>
             )}
-            <div className="flex gap-3 justify-center my-3">
-              <button
-                className="bg-green-500 rounded-md p-3 text-white font-bold"
-                onClick={() => handleStationFunction("ON")}
-              >
-                Ukljuci
-              </button>
-              <button
-                className="bg-red-500 rounded-md p-3 text-white font-bold"
-                onClick={() => handleStationFunction("SLP")}
-              >
-                Iskljuci
-              </button>
-              <button
-                className="bg-blue-500 rounded-md p-3 text-white font-bold"
-                onClick={() => handleStationFunction("RBT")}
-              >
-                Restart
-              </button>
-            </div>
+            {pinInfoDetails?.status !== 0 && (
+              <div className="flex gap-3 justify-center my-3">
+                <button
+                  className="bg-green-500 rounded-md p-3 text-white font-bold"
+                  onClick={() => handleStationFunction("ON")}
+                >
+                  Ukljuci
+                </button>
+                <button
+                  className="bg-red-500 rounded-md p-3 text-white font-bold"
+                  onClick={() => handleStationFunction("SLP")}
+                >
+                  Iskljuci
+                </button>
+                <button
+                  className="bg-blue-500 rounded-md p-3 text-white font-bold"
+                  onClick={() => handleStationFunction("RBT")}
+                >
+                  Restart
+                </button>
+              </div>
+            )}
+
+            {pinInfoDetails?.status == 0 && (
+              <div>
+                <button
+                  className="bg-green-500 rounded-md p-3 text-white font-bold my-3 w-full"
+                  onClick={planStation}
+                >
+                  Planiraj
+                </button>
+              </div>
+            )}
 
             <a
               href={`https://www.google.com/maps/place/${pinInfoDetails?.gpsx},${pinInfoDetails?.gpsy}`}

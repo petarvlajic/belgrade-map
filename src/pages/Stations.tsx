@@ -13,7 +13,7 @@ const Stations = () => {
   const [markers, setMarkers] = useState<MarkerType[] | undefined | null>(
     undefined
   );
-
+  const [showSpinner, setShowSpinner] = useState(false);
   const [searchValue, setSearchValue] = useState<string>("");
 
   const [searchStationData, setSearchStationData] = useState<
@@ -65,8 +65,12 @@ const Stations = () => {
   };
 
   const fetchOtherStations = async (type: string) => {
+    setShowSpinner(true);
     const { data } = await fetchService.get<MarkerType[]>(type);
     data && markers && setMarkers(data);
+    setTimeout(() => {
+      setShowSpinner(false);
+    }, 7500);
   };
 
   const searchForStation = async () => {
@@ -113,46 +117,46 @@ const Stations = () => {
                   Postavljene stanice
                 </button>
 
-                <label htmlFor="prikaziStanice">
-                  <input
-                    type="radio"
-                    name="prikaziStanice"
-                    id=""
-                    className="mr-1"
-                    onClick={() => fetchOtherStations("planed-stations")}
-                  />
+                <button
+                  className="rounded-xl py-2 px-4 border w-full"
+                  onClick={() => fetchOtherStations("planed-stations")}
+                >
                   Planirane stanice
-                </label>
+                </button>
 
-                <label htmlFor="prikaziStanice">
-                  <input
-                    type="radio"
-                    name="prikaziStanice"
-                    id=""
-                    className="mr-1"
-                    onClick={() => fetchOtherStations("wthout-plan-stations")}
-                  />
+                <button
+                  className="rounded-xl py-2 px-4 border w-full"
+                  onClick={() => fetchOtherStations("wthout-plan-stations")}
+                >
                   Neplanirane stanice
-                </label>
+                </button>
               </div>
             )}
             <button
               onClick={openModal}
-              className="bg-blue-500 text-white px-4 py-2 rounded-md"
+              className="bg-blue-500 text-white px-4 py-2 rounded-md border"
             >
               Add Location
             </button>
             <ModalForm isOpen={isModalOpen} onClose={closeModal} />
 
             <button
-              className="rounded-xl py-2 px-4 border"
+              className="rounded-xl py-2 px-4 border bg-red-600"
               onClick={() => window.location.reload()}
             >
               Restart
             </button>
           </div>
         </div>
-        <div className="xl:w-[80%]  w-full">
+        <div className="xl:w-[80%]  w-full relative">
+          {showSpinner && (
+            <div className="absolute inset-0 flex items-center justify-center bg-gray-800 bg-opacity-75 z-10">
+              <div className="bg-white p-5 rounded-lg">
+                <div className="loader ease-linear rounded-full border-8 border-t-8 border-gray-200 h-20 w-20"></div>
+                <p className="mt-2 text-gray-700 text-center">Loading..</p>
+              </div>
+            </div>
+          )}
           <Map markers={markers} searchStation={searchStationData} />
         </div>
         <div className="text-white xl:w-[10%] w-full self-start my-6">

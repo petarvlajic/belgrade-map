@@ -5,7 +5,7 @@ export const center = {
 
 export const mapContainerStyle = {
   width: "100%",
-  height: "71vh",
+  height: "80vh",
 };
 
 export const mapOptions = {
