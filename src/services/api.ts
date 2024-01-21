@@ -29,7 +29,7 @@ const fetchService = {
 
   post: async <T>(
     endpoint: string,
-    body: BodyInit
+    body: BodyInit | undefined
   ): Promise<ApiResponse<T>> => {
     try {
       const response = await fetch(`${apiUrl}/${endpoint}`, {

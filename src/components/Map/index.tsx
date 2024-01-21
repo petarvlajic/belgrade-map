@@ -21,7 +21,7 @@ import { MarkerHistory, MarkerType } from "../../types/Marker";
 //   }
 // };
 
-interface planStationRes {
+interface PlanResponse {
   msg: string;
   success: string;
 }
@@ -83,12 +83,12 @@ const Map: FC<Props> = ({ markers, searchStation }) => {
   };
 
   const planStation = async () => {
-    const { data } = fetchService.post<planStationRes>(
+    const { data } = await fetchService.post<PlanResponse>(
       `add-station-to-plan/${pinInfoDetails?.id}`,
       undefined
     );
 
-    console.log(data);
+    if (data?.success == "true") alert(data.msg);
   };
 
   return (
@@ -187,7 +187,9 @@ const Map: FC<Props> = ({ markers, searchStation }) => {
                 </tbody>
               </table>
             )}
-            {pinInfoDetails?.status !== 0 && (
+            {(pinInfoDetails?.status == 1 ||
+              pinInfoDetails?.status == 3 ||
+              pinInfoDetails?.status == 2) && (
               <div className="flex gap-3 justify-center my-3">
                 <button
                   className="bg-green-500 rounded-md p-3 text-white font-bold"
@@ -210,13 +212,15 @@ const Map: FC<Props> = ({ markers, searchStation }) => {
               </div>
             )}
 
-            {pinInfoDetails?.status == 0 && (
+            {(pinInfoDetails?.status == 0 ||
+              pinInfoDetails?.status == 7 ||
+              pinInfoDetails?.status == 6) && (
               <div>
                 <button
                   className="bg-green-500 rounded-md p-3 text-white font-bold my-3 w-full"
                   onClick={planStation}
                 >
-                  Planiraj
+                  {pinInfoDetails?.status == 0 ? "Planiraj" : " Iskopana rupa"}
                 </button>
               </div>
             )}
