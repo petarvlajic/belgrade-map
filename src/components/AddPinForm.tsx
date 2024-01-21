@@ -15,7 +15,6 @@ const ModalForm: React.FC<ModalFormProps> = ({ isOpen, onClose }) => {
     gspx: "",
     gspy: "",
     zona: "",
-    statusLabel: "1",
     // Add other form fields as needed
   });
 
@@ -46,7 +45,7 @@ const ModalForm: React.FC<ModalFormProps> = ({ isOpen, onClose }) => {
     <div
       className={`modal ${
         isOpen ? "block" : "hidden"
-      } bg-gray-500 bg-opacity-50 fixed top-0 left-0 right-0 bottom-0`}
+      } bg-gray-500 z-10 bg-opacity-50 fixed top-0 left-0 right-0 bottom-0`}
     >
       <div className="modal-overlay" onClick={onClose}></div>
       <div className="modal-container bg-white w-96 mx-auto mt-20 p-6 rounded-md shadow-lg">

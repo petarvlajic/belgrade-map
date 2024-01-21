@@ -88,7 +88,11 @@ const Map: FC<Props> = ({ markers, searchStation }) => {
       undefined
     );
 
-    if (data?.success == "true") alert(data.msg);
+    if (data?.success == "true") {
+      alert(data.msg);
+    } else {
+      alert("Greska prilikom planiranja stanice!");
+    }
   };
 
   return (
