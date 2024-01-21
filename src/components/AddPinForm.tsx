@@ -30,8 +30,10 @@ const ModalForm: React.FC<ModalFormProps> = ({ isOpen, onClose }) => {
     e.preventDefault();
     const reqFormData = new FormData();
     Object.entries(formData).forEach(([key, value]) => {
-      reqFormData.append(key, value);
+      reqFormData.append(key, String(value));
     });
+
+    console.log(reqFormData);
 
     const { data } = await fetchService.post<any>("add-station", reqFormData);
 
