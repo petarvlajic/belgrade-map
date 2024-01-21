@@ -5,7 +5,7 @@ import fetchService from "../services/api";
 
 interface LoginResponse {
   token: string;
-  success: boolean;
+  success: string;
 }
 
 const Login: React.FC = () => {
@@ -16,16 +16,23 @@ const Login: React.FC = () => {
 
   const handleLogin = async (e: FormEvent) => {
     e.preventDefault();
-    const data = new FormData();
-    data.append("Username", formData.username);
-    data.append("Password", formData.password);
-    const resp = await fetchService.post<LoginResponse>("login/Login", data);
-    if (resp.data) {
-      if (resp.data.success) {
-        localStorage.setItem("token", resp.data.token);
-        window.location.replace("/map");
-      } else {
-        localStorage.removeItem("token");
+    const formReqData = new FormData();
+    formReqData.append("Username", formData.username);
+    formReqData.append("Password", formData.password);
+    const { data, status } = await fetchService.post<LoginResponse>(
+      "login/Login",
+      formReqData
+    );
+
+    if (data?.success == "true") {
+      localStorage.setItem("token", data.token);
+      window.location.replace("/map");
+    } else {
+      localStorage.removeItem("token");
+      if (status == 401) {
+        alert("Korisnik ne postoji!");
+      } else if (status == 502) {
+        alert("Problem sa serverom");
       }
     }
   };

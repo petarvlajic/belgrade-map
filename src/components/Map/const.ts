@@ -20,3 +20,14 @@ export const mapOptions = {
     },
   ],
 };
+
+export const mapPins: string[] = [
+  "https://maps.google.com/mapfiles/kml/paddle/purple-circle-lv.png",
+  "https://maps.google.com/mapfiles/ms/icons/green-dot.png",
+  "https://maps.google.com/mapfiles/ms/icons/red-dot.png",
+  "https://maps.google.com/mapfiles/ms/icons/orange-dot.png",
+  "https://maps.google.com/mapfiles/ms/icons/pink-dot.png",
+  "https://maps.google.com/mapfiles/ms/icons/purple-dot.png",
+  "http://alma.sodalis.rs/navy-dot.png",
+  "https://maps.google.com/mapfiles/ms/icons/yellow-dot.png",
+];

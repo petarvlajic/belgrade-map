@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, KeyboardEvent } from "react";
 import Map from "../components/Map";
 import parseJwt from "../lib/parseJwt";
 import fetchService from "../services/api";
@@ -42,7 +42,6 @@ const Stations = () => {
         const { status } = await fetchService.get<MarkerType[]>("login/ping");
         console.log(status);
         if (status == 401) {
-          console.log("e");
           navigate("/");
         }
       } catch (error) {
@@ -79,34 +78,36 @@ const Stations = () => {
     }
   };
 
+  const handleEnterKeyPress = (event: KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === "Enter") {
+      searchForStation();
+    }
+  };
+
   return (
-    <div className="container mx-auto  px-4">
-      <div className="flex xl:flex-row md:flex-col">
-        <div className="text-white self-end my-6">
-          <Counter />
-        </div>
-        <div className="md:w-full xl:order-1">
-          <Map markers={markers} searchStation={searchStationData} />
-          <div className="justify-center  mt-4 flex gap-3 text-white ">
-            <div className="justify-center  mt-4 flex  text-white ">
+    <div className="container mx-auto  px-4 mt-12">
+      <div className="flex xl:flex-row flex-col gap-4">
+        <div className="xl:w-[20%] w-full">
+          <div className="justify-center  mt-4 flex gap-3 text-white flex-col">
+            <div className=" mt-4 flex text-white h-full w-full">
               <input
                 type="text"
-                className="rounded-l-md h-full text-black"
+                className="rounded-l-md  text-black h-[42px] w-3/4"
                 onChange={handleSearchInputSearch}
                 value={searchValue}
-                onKeyDown={searchForStation}
+                onKeyDown={handleEnterKeyPress}
               />
               <button
-                className="border py-2 px-4 rounded-r-md"
+                className="border  rounded-r-md py-2 px-3 w-1/4"
                 onClick={searchForStation}
               >
                 Search
               </button>
             </div>
             {isEditor && (
-              <div className="justify-center  mt-4 flex gap-3 text-white items-center">
+              <div className="justify-center  mt-4 flex gap-3 text-white items-start flex-col">
                 <button
-                  className="rounded-xl py-2 px-4 border"
+                  className="rounded-xl py-2 px-4 border w-full"
                   onClick={() => window.location.reload()}
                 >
                   Postavljene stanice
@@ -150,6 +151,12 @@ const Stations = () => {
               Restart
             </button>
           </div>
+        </div>
+        <div className="xl:w-[80%]  w-full">
+          <Map markers={markers} searchStation={searchStationData} />
+        </div>
+        <div className="text-white xl:w-[10%] w-full self-start my-6">
+          <Counter />
         </div>
       </div>
     </div>

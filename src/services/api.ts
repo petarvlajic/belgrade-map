@@ -43,7 +43,11 @@ const fetchService = {
       const data = await response.json();
       return { data, status: response.status };
     } catch (error) {
-      return { data: null, error: "An error occurred while posting data." };
+      return {
+        data: null,
+        error: "An error occurred while posting data.",
+        status: 502,
+      };
     }
   },
 };

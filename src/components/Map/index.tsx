@@ -7,19 +7,19 @@ import {
 } from "@react-google-maps/api";
 import { FC, useEffect, useState } from "react";
 import fetchService from "../../services/api";
-import { center, mapContainerStyle, mapOptions } from "./const";
+import { center, mapContainerStyle, mapOptions, mapPins } from "./const";
 import { MarkerHistory, MarkerType } from "../../types/Marker";
 
-const getPinColor = (status: number): string => {
-  switch (status) {
-    case 1:
-      return "green";
-    case 2:
-      return "red";
-    default:
-      return "blue";
-  }
-};
+// const getPinColor = (status: number): string => {
+//   switch (status) {
+//     case 1:
+//       return "green";
+//     case 2:
+//       return "red";
+//     default:
+//       return "blue";
+//   }
+// };
 
 interface Props {
   markers: MarkerType[] | undefined | null;
@@ -107,9 +107,7 @@ const Map: FC<Props> = ({ markers, searchStation }) => {
                   className: "mb-12",
                 }}
                 icon={{
-                  url: `http://maps.google.com/mapfiles/ms/icons/${getPinColor(
-                    pin.status
-                  )}-dot.png`,
+                  url: mapPins[pin.status],
                 }}
                 clusterer={clusterer}
               />
