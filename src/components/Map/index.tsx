@@ -76,10 +76,15 @@ const Map: FC<Props> = ({ markers, searchStation }) => {
   };
 
   const handleStationFunction = async (type: "SLP" | "RBT" | "ON") => {
-    const data = new FormData();
-    data.append("id", `${pinInfoDetails?.id}`);
-    data.append("command", type);
-    await fetchService.post<any>("change-command", data);
+    const formData = new FormData();
+    formData.append("id", `${pinInfoDetails?.id}`);
+    formData.append("command", type);
+    const { data } = await fetchService.post<any>("change-command", formData);
+
+    if (data.success == true) {
+      alert("Status stanice uspesno promenjen!");
+      window.location.reload();
+    }
   };
 
   const planStation = async () => {

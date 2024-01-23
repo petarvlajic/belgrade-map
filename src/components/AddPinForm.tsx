@@ -29,17 +29,21 @@ const ModalForm: React.FC<ModalFormProps> = ({ isOpen, onClose }) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const reqFormData = new FormData();
-    Object.entries(formData).forEach(([key, value]) => {
-      reqFormData.append(key, String(value));
-    });
 
-    console.log(reqFormData);
+    reqFormData.append("name", `${formData.name}`);
+    reqFormData.append("id", `${formData.id}`);
+    reqFormData.append("gspx", `${formData.gspx}`);
+    reqFormData.append("gspy", `${formData.gspy}`);
+    reqFormData.append("zona", `${formData.zona}`);
 
     const { data } = await fetchService.post<any>("add-station", reqFormData);
 
-    console.log(data);
-
-    alert("Lokacija uspesno dodata!");
+    if (data.success == true) {
+      alert("Lokacija uspesno dodata!");
+      window.location.reload();
+    } else {
+      alert("Problem prilikom dodavanja stanice!");
+    }
     onClose();
   };
 
