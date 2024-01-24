@@ -12,8 +12,8 @@ const ModalForm: React.FC<ModalFormProps> = ({ isOpen, onClose }) => {
   const [formData, setFormData] = useState({
     name: "",
     id: "",
-    gspx: "",
-    gspy: "",
+    gpsx: "",
+    gpsy: "",
     zona: "",
     // Add other form fields as needed
   });
@@ -30,11 +30,9 @@ const ModalForm: React.FC<ModalFormProps> = ({ isOpen, onClose }) => {
     e.preventDefault();
     const reqFormData = new FormData();
 
-    reqFormData.append("name", `${formData.name}`);
-    reqFormData.append("id", `${formData.id}`);
-    reqFormData.append("gspx", `${formData.gspx}`);
-    reqFormData.append("gspy", `${formData.gspy}`);
-    reqFormData.append("zona", `${formData.zona}`);
+    Object.entries(formData).forEach(([key, value]) => {
+      reqFormData.append(key, String(value));
+    });
 
     const { data } = await fetchService.post<any>("add-station", reqFormData);
 
