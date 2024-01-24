@@ -92,7 +92,7 @@ const ModalForm: React.FC<ModalFormProps> = ({ isOpen, onClose }) => {
               <input
                 type="gspx"
                 name="gspx"
-                value={formData.gspx}
+                value={formData.gpsx}
                 onChange={handleChange}
                 className="mt-1 p-2 w-full border border-gray-300 rounded-md"
               />
@@ -104,7 +104,7 @@ const ModalForm: React.FC<ModalFormProps> = ({ isOpen, onClose }) => {
               <input
                 type="gspy"
                 name="gspy"
-                value={formData.gspy}
+                value={formData.gpsy}
                 onChange={handleChange}
                 className="mt-1 p-2 w-full border border-gray-300 rounded-md"
               />
