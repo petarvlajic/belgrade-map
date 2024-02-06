@@ -6,13 +6,12 @@ import { MarkerType } from "../types/Marker";
 import Counter from "../components/Counter";
 import ModalForm from "../components/AddPinForm";
 import { useNavigate } from "react-router-dom";
+import useMarkers from "../hooks/useMarkers";
 
 const Stations = () => {
   const [isEditor, setIsEditor] = useState<boolean | undefined>(false);
   const navigate = useNavigate();
-  const [markers, setMarkers] = useState<MarkerType[] | undefined | null>(
-    undefined
-  );
+  const { markers, setMarkers } = useMarkers();
   const [showSpinner, setShowSpinner] = useState(false);
   const [searchValue, setSearchValue] = useState<string>("");
 

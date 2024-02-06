@@ -9,21 +9,11 @@ import { FC, useEffect, useState } from "react";
 import fetchService from "../../services/api";
 import { center, mapContainerStyle, mapOptions, mapPins } from "./const";
 import { MarkerHistory, MarkerType } from "../../types/Marker";
-
-// const getPinColor = (status: number): string => {
-//   switch (status) {
-//     case 1:
-//       return "green";
-//     case 2:
-//       return "red";
-//     default:
-//       return "blue";
-//   }
-// };
+import useMarkers from "../../hooks/useMarkers";
 
 interface PlanResponse {
   msg: string;
-  success: string;
+  success: boolean;
 }
 
 interface Props {
@@ -41,6 +31,8 @@ const Map: FC<Props> = ({ markers, searchStation }) => {
   const { isLoaded, loadError } = useLoadScript({
     googleMapsApiKey: "AIzaSyDFChsu6DMeZSUk06u1WeXnJqkCXhYnENc",
   });
+
+  const { deleteMarker, changeMarkerStatus } = useMarkers();
 
   useEffect(() => {
     console.log(searchStation);
@@ -81,9 +73,9 @@ const Map: FC<Props> = ({ markers, searchStation }) => {
     formData.append("command", type);
     const { data } = await fetchService.post<any>("change-command", formData);
 
-    if (data.success == true) {
+    if (data.success == true && pinInfoDetails?.id) {
       alert("Status stanice uspesno promenjen!");
-      window.location.reload();
+      changeMarkerStatus(pinInfoDetails.id, data.status);
     }
   };
 
@@ -93,8 +85,10 @@ const Map: FC<Props> = ({ markers, searchStation }) => {
       undefined
     );
 
-    if (data?.success == "true") {
+    if (data?.success == true && pinInfoDetails?.id) {
       alert(data.msg);
+      setIsInfoWindowOpen(false);
+      deleteMarker(pinInfoDetails.id);
     } else {
       alert("Greska prilikom planiranja stanice!");
     }
