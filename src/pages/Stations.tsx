@@ -14,6 +14,7 @@ const Stations = () => {
   const { markers, setMarkers } = useMarkers();
   const [showSpinner, setShowSpinner] = useState(false);
   const [searchValue, setSearchValue] = useState<string>("");
+  const [currentStationType, setCurrentStationType] = useState<string>("");
 
   const [searchStationData, setSearchStationData] = useState<
     MarkerType | undefined | null
@@ -30,6 +31,7 @@ const Stations = () => {
     const fetchData = async () => {
       try {
         const { data } = await fetchService.get<MarkerType[]>("stations");
+        setCurrentStationType("stations");
         setMarkers(data);
       } catch (error) {
         console.log("An unexpected error occurred.");
@@ -51,20 +53,25 @@ const Stations = () => {
     checkJWT();
 
     fetchData();
-  }, [navigate]);
+
+    // Polling function to fetch data every five minutes
+    const pollingInterval = setInterval(() => {
+      fetchData();
+    }, 5 * 60 * 1000); // 5 minutes in milliseconds
+
+    // Clear the interval on component unmount to prevent memory leaks
+    return () => clearInterval(pollingInterval);
+  }, [currentStationType, navigate, setMarkers]);
 
   const [isModalOpen, setModalOpen] = useState(false);
 
-  const openModal = () => {
-    setModalOpen(true);
-  };
+  const openModal = () => setModalOpen(true);
 
-  const closeModal = () => {
-    setModalOpen(false);
-  };
+  const closeModal = () => setModalOpen(false);
 
   const fetchOtherStations = async (type: string) => {
     setShowSpinner(true);
+    setCurrentStationType(type);
     const { data } = await fetchService.get<MarkerType[]>(type);
     data && markers && setMarkers(data);
     setTimeout(() => {
@@ -84,6 +91,19 @@ const Stations = () => {
   const handleEnterKeyPress = (event: KeyboardEvent<HTMLInputElement>) => {
     if (event.key === "Enter") {
       searchForStation();
+    }
+  };
+
+  const getCurrentStationTypeHeadline = () => {
+    switch (currentStationType) {
+      case "stations":
+        return "Postavljene Stanice";
+      case "wthout-plan-stations":
+        return "Neplanirane stanice";
+      case "planed-stations":
+        return "Planirane stanice";
+      default:
+        return "Stanice";
     }
   };
 
@@ -156,6 +176,9 @@ const Stations = () => {
               </div>
             </div>
           )}
+          <h2 className="text-white text-2xl font-semibold text-center mb-5">
+            {getCurrentStationTypeHeadline()}
+          </h2>
           <Map markers={markers} searchStation={searchStationData} />
         </div>
         <div className="text-white xl:w-[10%] w-full self-start my-6">

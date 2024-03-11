@@ -21,7 +21,7 @@ interface Props {
   searchStation: MarkerType | undefined | null;
 }
 
-const Map: FC<Props> = ({ markers, searchStation }) => {
+const Map: FC<Props> = ({ searchStation }) => {
   const [isInfoWindowOpen, setIsInfoWindowOpen] = useState<boolean>(false);
   const [pinInfoDetails, setPinInfoDetails] = useState<MarkerType | null>(null);
   const [pinHistoryDetails, setPinHistoryDetails] = useState<
@@ -32,7 +32,7 @@ const Map: FC<Props> = ({ markers, searchStation }) => {
     googleMapsApiKey: "AIzaSyDFChsu6DMeZSUk06u1WeXnJqkCXhYnENc",
   });
 
-  const { deleteMarker, changeMarkerStatus } = useMarkers();
+  const { markers, deleteMarker, changeMarkerStatus } = useMarkers();
 
   useEffect(() => {
     console.log(searchStation);
