@@ -1,15 +1,19 @@
 import { useEffect, useState } from "react";
 import fetchService from "../services/api";
+import useMarkers from "../hooks/useMarkers";
 
 interface Counter {
   status: string;
   count: number;
+  statusId: number;
 }
 
 const Counter = () => {
   const [counters, setCounters] = useState<Counter[] | undefined | null>(
     undefined
   );
+
+  const { getMarkersByStatus } = useMarkers();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -24,7 +28,13 @@ const Counter = () => {
       <ul className="font-bold">
         {counters?.map((type) => (
           <li key={type.status}>
-            {type.status} : {type.count}
+            <button
+              onClick={() => {
+                getMarkersByStatus(type.statusId);
+              }}
+            >
+              {type.status} : {type.count}
+            </button>
           </li>
         ))}
       </ul>

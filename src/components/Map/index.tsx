@@ -4,12 +4,13 @@ import {
   InfoWindow,
   MarkerClusterer,
   useLoadScript,
-} from "@react-google-maps/api";
-import { FC, useEffect, useState } from "react";
-import fetchService from "../../services/api";
-import { center, mapContainerStyle, mapOptions, mapPins } from "./const";
-import { MarkerHistory, MarkerType } from "../../types/Marker";
-import useMarkers from "../../hooks/useMarkers";
+} from '@react-google-maps/api';
+import { FC, useEffect, useState } from 'react';
+import fetchService from '../../services/api';
+import { center, mapContainerStyle, mapOptions, mapPins } from './const';
+import { MarkerHistory, MarkerType } from '../../types/Marker';
+import useMarkers from '../../hooks/useMarkers';
+import useSpinner from '../../hooks/useSpinner';
 
 interface PlanResponse {
   msg: string;
@@ -21,7 +22,7 @@ interface Props {
   searchStation: MarkerType | undefined | null;
 }
 
-const Map: FC<Props> = ({ searchStation }) => {
+const Map: FC<Props> = ({ searchStation, markers }) => {
   const [isInfoWindowOpen, setIsInfoWindowOpen] = useState<boolean>(false);
   const [pinInfoDetails, setPinInfoDetails] = useState<MarkerType | null>(null);
   const [pinHistoryDetails, setPinHistoryDetails] = useState<
@@ -29,14 +30,11 @@ const Map: FC<Props> = ({ searchStation }) => {
   >(null);
 
   const { isLoaded, loadError } = useLoadScript({
-    googleMapsApiKey: "AIzaSyDFChsu6DMeZSUk06u1WeXnJqkCXhYnENc",
+    googleMapsApiKey: 'AIzaSyDFChsu6DMeZSUk06u1WeXnJqkCXhYnENc',
   });
 
-  const { markers, deleteMarker, changeMarkerStatus } = useMarkers();
-
-  useEffect(() => {
-    console.log(searchStation);
-  }, [searchStation]);
+  const { setShowSpinner, showSpinner } = useSpinner();
+  const { deleteMarker, changeMarkerStatus } = useMarkers();
 
   useEffect(() => {
     const fetchPinDetails = async () => {
@@ -47,12 +45,16 @@ const Map: FC<Props> = ({ searchStation }) => {
         );
         setPinHistoryDetails(data);
       } catch (error) {
-        console.log("An unexpected error occurred.");
+        console.log('An unexpected error occurred.');
       }
     };
 
     fetchPinDetails();
   }, [pinInfoDetails]);
+
+  useEffect(() => {
+    setShowSpinner(false);
+  }, [markers, setShowSpinner]);
 
   if (loadError) {
     return <div>Error loading maps</div>;
@@ -67,14 +69,14 @@ const Map: FC<Props> = ({ searchStation }) => {
     setIsInfoWindowOpen(true);
   };
 
-  const handleStationFunction = async (type: "SLP" | "RBT" | "ON") => {
+  const handleStationFunction = async (type: 'SLP' | 'RBT' | 'ON') => {
     const formData = new FormData();
-    formData.append("id", `${pinInfoDetails?.id}`);
-    formData.append("command", type);
-    const { data } = await fetchService.post<any>("change-command", formData);
+    formData.append('id', `${pinInfoDetails?.id}`);
+    formData.append('command', type);
+    const { data } = await fetchService.post<any>('change-command', formData);
 
     if (data.success == true && pinInfoDetails?.id) {
-      alert("Status stanice uspesno promenjen!");
+      alert('Status stanice uspesno promenjen!');
       changeMarkerStatus(pinInfoDetails.id, data.status);
     }
   };
@@ -90,7 +92,7 @@ const Map: FC<Props> = ({ searchStation }) => {
       setIsInfoWindowOpen(false);
       deleteMarker(pinInfoDetails.id);
     } else {
-      alert("Greska prilikom planiranja stanice!");
+      alert('Greska prilikom planiranja stanice!');
     }
   };
 
@@ -114,21 +116,23 @@ const Map: FC<Props> = ({ searchStation }) => {
       >
         {(clusterer) => (
           <div>
-            {markers?.map((pin) => (
-              <Marker
-                key={pin.id}
-                position={{ lat: pin.gpsx, lng: pin.gpsy }}
-                onClick={() => handlePinClick(pin)}
-                label={{
-                  text: pin.id.toString(),
-                  className: "mb-12",
-                }}
-                icon={{
-                  url: mapPins[pin.status],
-                }}
-                clusterer={clusterer}
-              />
-            ))}
+            {markers?.map((pin, index) => {
+              return (
+                <Marker
+                  key={pin.id}
+                  position={{ lat: pin.gpsx, lng: pin.gpsy }}
+                  onClick={() => handlePinClick(pin)}
+                  label={{
+                    text: pin.id.toString(),
+                    className: 'mb-12',
+                  }}
+                  icon={{
+                    url: mapPins[pin.status],
+                  }}
+                  clusterer={clusterer}
+                />
+              );
+            })}
           </div>
         )}
       </MarkerClusterer>
@@ -176,9 +180,9 @@ const Map: FC<Props> = ({ searchStation }) => {
                     pinHistoryDetails?.map((action) => (
                       <tr
                         className={`border text-center ${
-                          action.type == "1"
-                            ? "bg-green-500 text-black"
-                            : "bg-red-500 text-white"
+                          action.type == '1'
+                            ? 'bg-green-500 text-black'
+                            : 'bg-red-500 text-white'
                         }`}
                       >
                         <td>{action.type}</td>
@@ -196,19 +200,19 @@ const Map: FC<Props> = ({ searchStation }) => {
               <div className="flex gap-3 justify-center my-3">
                 <button
                   className="bg-green-500 rounded-md p-3 text-white font-bold"
-                  onClick={() => handleStationFunction("ON")}
+                  onClick={() => handleStationFunction('ON')}
                 >
                   Ukljuci
                 </button>
                 <button
                   className="bg-red-500 rounded-md p-3 text-white font-bold"
-                  onClick={() => handleStationFunction("SLP")}
+                  onClick={() => handleStationFunction('SLP')}
                 >
                   Iskljuci
                 </button>
                 <button
                   className="bg-blue-500 rounded-md p-3 text-white font-bold"
-                  onClick={() => handleStationFunction("RBT")}
+                  onClick={() => handleStationFunction('RBT')}
                 >
                   Restart
                 </button>
@@ -223,7 +227,7 @@ const Map: FC<Props> = ({ searchStation }) => {
                   className="bg-green-500 rounded-md p-3 text-white font-bold my-3 w-full"
                   onClick={planStation}
                 >
-                  {pinInfoDetails?.status == 0 ? "Planiraj" : " Iskopana rupa"}
+                  {pinInfoDetails?.status == 0 ? 'Planiraj' : ' Iskopana rupa'}
                 </button>
               </div>
             )}
