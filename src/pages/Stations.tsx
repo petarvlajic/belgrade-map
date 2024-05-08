@@ -23,7 +23,8 @@ const Stations = () => {
 
   const { showSpinner, setShowSpinner } = useSpinner();
   const [searchValue, setSearchValue] = useState<string>('');
-  const [currentStationType, setCurrentStationType] = useState<string>('');
+  const [currentStationType, setCurrentStationType] =
+    useState<string>('stations');
   const [searchStationData, setSearchStationData] = useState<
     MarkerType | undefined | null
   >(undefined);
@@ -42,8 +43,9 @@ const Stations = () => {
     setIsEditor(parseJwt(localStorage.getItem('token')));
     const fetchData = async () => {
       try {
-        const { data } = await fetchService.get<MarkerType[]>('stations');
-        setCurrentStationType('stations');
+        const { data } = await fetchService.get<MarkerType[]>(
+          currentStationType
+        );
         setMarkers(data);
       } catch (error) {
         console.log('An unexpected error occurred.');
@@ -73,7 +75,7 @@ const Stations = () => {
 
     // Clear the interval on component unmount to prevent memory leaks
     return () => clearInterval(pollingInterval);
-  }, [currentStationType, navigate, setMarkers]);
+  }, [currentStationType, navigate]);
 
   const [isModalOpen, setModalOpen] = useState(false);
 
@@ -84,8 +86,9 @@ const Stations = () => {
   const fetchOtherStations = async (type: string) => {
     setShowSpinner(true);
     setCurrentStationType(type);
-    const { data } = await fetchService.get<MarkerType[]>(type);
-    data && markers && setMarkers(data);
+    // console.log(type);
+    // const { data } = await fetchService.get<MarkerType[]>(type);
+    // data && markers && setMarkers(data);
     setTimeout(() => {
       setShowSpinner(false);
     }, 7500);
