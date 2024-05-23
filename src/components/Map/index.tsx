@@ -33,7 +33,7 @@ const Map: FC<Props> = ({ searchStation, markers }) => {
     googleMapsApiKey: 'AIzaSyDFChsu6DMeZSUk06u1WeXnJqkCXhYnENc',
   });
 
-  const { setShowSpinner, showSpinner } = useSpinner();
+  const { setShowSpinner } = useSpinner();
   const { deleteMarker, changeMarkerStatus } = useMarkers();
 
   useEffect(() => {
@@ -116,7 +116,7 @@ const Map: FC<Props> = ({ searchStation, markers }) => {
       >
         {(clusterer) => (
           <div>
-            {markers?.map((pin, index) => {
+            {markers?.map((pin) => {
               return (
                 <Marker
                   key={pin.id}
