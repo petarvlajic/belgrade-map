@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
-import fetchService from "../services/api";
-import useMarkers from "../hooks/useMarkers";
+import { useEffect, useState } from 'react';
+import fetchService from '../services/api';
+import useMarkers from '../hooks/useMarkers';
 
 interface Counter {
   status: string;

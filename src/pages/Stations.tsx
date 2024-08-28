@@ -9,6 +9,7 @@ import { useNavigate } from 'react-router-dom';
 import useMarkers from '../hooks/useMarkers';
 import Chip from '../components/Chips';
 import useSpinner from '../hooks/useSpinner';
+import ListOffline from '../components/Stations/ListOffline';
 
 const Stations = () => {
   const [isEditor, setIsEditor] = useState<boolean | undefined>(false);
@@ -145,16 +146,20 @@ const Stations = () => {
 
   const handleAddChip = (event: KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter') {
-      const newChipNumber = Number(newChip.trim());
-      if (newChip.trim() !== '' && !isNaN(newChipNumber)) {
-        setChips((prevChips) => [...prevChips, newChipNumber]);
+      const chipValues = newChip.split(' ').map((value) => value.trim());
+      const validChips = chipValues
+        .filter((value) => !isNaN(Number(value)))
+        .map(Number);
+
+      if (validChips.length > 0) {
+        setChips((prevChips) => [...prevChips, ...validChips]);
         setNewChip('');
       }
     }
   };
 
   return (
-    <div className="container mx-auto  px-4 mt-12">
+    <div className="container mx-auto   mt-12">
       <div className="flex xl:flex-row flex-col gap-4">
         <div className="xl:w-[20%] w-full">
           <div className="justify-center  mt-4 flex gap-3 text-white flex-col">
@@ -199,7 +204,7 @@ const Stations = () => {
             )}
             <button
               onClick={openModal}
-              className="bg-blue-500 text-white px-4 py-2 rounded-md border"
+              className="bg-green-500 text-white px-4 py-2 rounded-md border"
             >
               Dodaj novo stajaliste
             </button>
@@ -209,7 +214,7 @@ const Stations = () => {
               className="rounded-xl py-2 px-4 border bg-red-600"
               onClick={() => window.location.reload()}
             >
-              Restart
+              Restart vise stanica
             </button>
 
             <input
@@ -243,7 +248,7 @@ const Stations = () => {
             </button>
           </div>
         </div>
-        <div className="xl:w-[80%]  w-full relative">
+        <div className="xl:w-[75%]  w-full relative">
           {showSpinner && (
             <div className="absolute inset-0 flex items-center justify-center bg-gray-800 bg-opacity-75 z-10">
               <div className="bg-white p-5 rounded-lg">
@@ -257,8 +262,9 @@ const Stations = () => {
           </h2>
           <Map markers={displayedMarkers} searchStation={searchStationData} />
         </div>
-        <div className="text-white xl:w-[10%] w-full self-start my-6">
+        <div className="text-white xl:w-[15%] w-full self-start my-6">
           <Counter />
+          <ListOffline />
         </div>
       </div>
     </div>

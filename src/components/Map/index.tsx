@@ -18,7 +18,7 @@ interface PlanResponse {
 }
 
 interface Props {
-  markers: MarkerType[] | undefined | null;
+  markers: MarkerType[] | null;
   searchStation: MarkerType | undefined | null;
 }
 
@@ -73,6 +73,7 @@ const Map: FC<Props> = ({ searchStation, markers }) => {
     const formData = new FormData();
     formData.append('id', `${pinInfoDetails?.id}`);
     formData.append('command', type);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const { data } = await fetchService.post<any>('change-command', formData);
 
     if (data.success == true && pinInfoDetails?.id) {
@@ -98,6 +99,7 @@ const Map: FC<Props> = ({ searchStation, markers }) => {
 
   return (
     <GoogleMap
+      key={markers?.length} // Adding key to force re-render
       mapContainerStyle={mapContainerStyle}
       zoom={searchStation ? 20 : 12}
       center={
@@ -137,11 +139,11 @@ const Map: FC<Props> = ({ searchStation, markers }) => {
         )}
       </MarkerClusterer>
 
-      {isInfoWindowOpen && (
+      {isInfoWindowOpen && pinInfoDetails && (
         <InfoWindow
           position={{
-            lat: pinInfoDetails?.gpsx || 0,
-            lng: pinInfoDetails?.gpsy || 0,
+            lat: pinInfoDetails.gpsx,
+            lng: pinInfoDetails.gpsy,
           }}
           options={{ pixelOffset: new window.google.maps.Size(0, -35) }}
           onCloseClick={() => setIsInfoWindowOpen(false)}
@@ -150,19 +152,19 @@ const Map: FC<Props> = ({ searchStation, markers }) => {
             <ul>
               <li className="flex gap-2">
                 <p className="font-semibold">ID:</p>
-                <p>{pinInfoDetails?.id}</p>
+                <p>{pinInfoDetails.id}</p>
               </li>
               <li className="flex gap-2">
                 <p className="font-semibold">Naziv stajalista:</p>
-                <p>{pinInfoDetails?.name}</p>
+                <p>{pinInfoDetails.name}</p>
               </li>
               <li className="flex gap-2">
                 <p className="font-semibold">Zona:</p>
-                <p>{pinInfoDetails?.zona}</p>
+                <p>{pinInfoDetails.zona}</p>
               </li>
               <li className="flex gap-2">
                 <p className="font-semibold">Status</p>
-                <p>{pinInfoDetails?.statusLabel}</p>
+                <p>{pinInfoDetails.statusLabel}</p>
               </li>
             </ul>
             {pinHistoryDetails?.length !== 0 && (
@@ -176,27 +178,27 @@ const Map: FC<Props> = ({ searchStation, markers }) => {
                   </tr>
                 </thead>
                 <tbody>
-                  {pinHistoryDetails &&
-                    pinHistoryDetails?.map((action) => (
-                      <tr
-                        className={`border text-center ${
-                          action.type == '1'
-                            ? 'bg-green-500 text-black'
-                            : 'bg-red-500 text-white'
-                        }`}
-                      >
-                        <td>{action.type}</td>
-                        <td>{action.username}</td>
-                        <td>{String(action.time)}</td>
-                        <td>{action.description}</td>
-                      </tr>
-                    ))}
+                  {pinHistoryDetails?.map((action) => (
+                    <tr
+                      key={action.id}
+                      className={`border text-center ${
+                        action.type === '1'
+                          ? 'bg-green-500 text-black'
+                          : 'bg-red-500 text-white'
+                      }`}
+                    >
+                      <td>{action.type}</td>
+                      <td>{action.username}</td>
+                      <td>{String(action.time)}</td>
+                      <td>{action.description}</td>
+                    </tr>
+                  ))}
                 </tbody>
               </table>
             )}
-            {(pinInfoDetails?.status == 1 ||
-              pinInfoDetails?.status == 3 ||
-              pinInfoDetails?.status == 2) && (
+            {(pinInfoDetails.status === 1 ||
+              pinInfoDetails.status === 3 ||
+              pinInfoDetails.status === 2) && (
               <div className="flex gap-3 justify-center my-3">
                 <button
                   className="bg-green-500 rounded-md p-3 text-white font-bold"
@@ -216,24 +218,51 @@ const Map: FC<Props> = ({ searchStation, markers }) => {
                 >
                   Restart
                 </button>
+                <button
+                  className="bg-gray-300 rounded-md p-3 text-white font-bold"
+                  // onClick={() => handleStationFunction('RBT')}
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="16"
+                    height="16"
+                    fill="#000"
+                    viewBox="0 0 16 16"
+                  >
+                    <path
+                      fill-rule="evenodd"
+                      d="M8 3a5 5 0 1 1-4.546 2.914.5.5 0 0 0-.908-.417A6 6 0 1 0 8 2z"
+                    />
+                    <path d="M8 4.466V.534a.25.25 0 0 0-.41-.192L5.23 2.308a.25.25 0 0 0 0 .384l2.36 1.966A.25.25 0 0 0 8 4.466" />
+                  </svg>
+                </button>
               </div>
             )}
 
-            {(pinInfoDetails?.status == 0 ||
-              pinInfoDetails?.status == 7 ||
-              pinInfoDetails?.status == 6) && (
+            {(pinInfoDetails.status === 0 ||
+              pinInfoDetails.status === 7 ||
+              pinInfoDetails.status === 6) && (
               <div>
                 <button
                   className="bg-green-500 rounded-md p-3 text-white font-bold my-3 w-full"
                   onClick={planStation}
                 >
-                  {pinInfoDetails?.status == 0 ? 'Planiraj' : ' Iskopana rupa'}
+                  {pinInfoDetails.status === 0 ? 'Planiraj' : ' Iskopana rupa'}
                 </button>
               </div>
             )}
 
+            {pinInfoDetails.status === 2 && (
+              <div>
+                - Ukoliko je status offline, prikazuju se informacije: - Kada je
+                poslednji put bila online - Poslednja zabelezena temperatura na
+                banani - Poslednja zabelezena struja (HW) - Poslednji zabelezen
+                napon (HW)
+              </div>
+            )}
+
             <a
-              href={`https://www.google.com/maps/place/${pinInfoDetails?.gpsx},${pinInfoDetails?.gpsy}`}
+              href={`https://www.google.com/maps/place/${pinInfoDetails.gpsx},${pinInfoDetails.gpsy}`}
               target="_blank"
               className="bg-blue-500 rounded-md p-3 text-white font-bold w-full block text-center"
             >
