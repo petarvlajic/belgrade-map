@@ -12,7 +12,7 @@ const fetchService = {
       const response = await fetch(`${apiUrl}/${endpoint}`, {
         headers: {
           cors: 'no-cors',
-          'Access-Control-Allow-Origin': 'no-cors',
+          // 'Access-Control-Allow-Origin': 'no-cors',
           Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
       });
@@ -32,11 +32,18 @@ const fetchService = {
     body: BodyInit | undefined
   ): Promise<ApiResponse<T>> => {
     try {
+      const token = localStorage.getItem('token');
+
+      const headers = {};
+
+      // If the token exists, add the Authorization header
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+      }
+
       const response = await fetch(`${apiUrl}/${endpoint}`, {
         method: 'POST',
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
-        },
+        headers: headers,
         body: body,
       });
 

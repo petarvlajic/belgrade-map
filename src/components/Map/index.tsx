@@ -159,8 +159,16 @@ const Map: FC<Props> = ({ searchStation, markers }) => {
                 <p>{pinInfoDetails.name}</p>
               </li>
               <li className="flex gap-2">
-                <p className="font-semibold">Zona:</p>
-                <p>{pinInfoDetails.zona}</p>
+                <p className="font-semibold">Temperatura:</p>
+                <p>{pinInfoDetails.temp}</p>
+              </li>
+              <li className="flex gap-2">
+                <p className="font-semibold">Struja i Napon (HW):</p>
+                <p>{pinInfoDetails.voltage}</p>
+              </li>
+              <li className="flex gap-2">
+                <p className="font-semibold">Komentar:</p>
+                {/* <p>{pinInfoDetails.}</p> */}
               </li>
               <li className="flex gap-2">
                 <p className="font-semibold">Status</p>
@@ -222,19 +230,7 @@ const Map: FC<Props> = ({ searchStation, markers }) => {
                   className="bg-gray-300 rounded-md p-3 text-white font-bold"
                   // onClick={() => handleStationFunction('RBT')}
                 >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="16"
-                    height="16"
-                    fill="#000"
-                    viewBox="0 0 16 16"
-                  >
-                    <path
-                      fill-rule="evenodd"
-                      d="M8 3a5 5 0 1 1-4.546 2.914.5.5 0 0 0-.908-.417A6 6 0 1 0 8 2z"
-                    />
-                    <path d="M8 4.466V.534a.25.25 0 0 0-.41-.192L5.23 2.308a.25.25 0 0 0 0 .384l2.36 1.966A.25.25 0 0 0 8 4.466" />
-                  </svg>
+                  Preuzmi Logove
                 </button>
               </div>
             )}
@@ -254,10 +250,12 @@ const Map: FC<Props> = ({ searchStation, markers }) => {
 
             {pinInfoDetails.status === 2 && (
               <div>
-                - Ukoliko je status offline, prikazuju se informacije: - Kada je
-                poslednji put bila online - Poslednja zabelezena temperatura na
-                banani - Poslednja zabelezena struja (HW) - Poslednji zabelezen
-                napon (HW)
+                <ul>
+                  <li>Posl. put online: {pinInfoDetails.log}</li>
+                  <li>Posl. temperatura: {pinInfoDetails.temp}</li>
+                  <li>Posl. struja: {pinInfoDetails.voltage}</li>
+                  <li>Posl. napon: {pinInfoDetails.voltage}</li>
+                </ul>
               </div>
             )}
 
