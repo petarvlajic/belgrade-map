@@ -53,9 +53,9 @@ const StatusCounter: FC<Props> = ({ status, count, statusId }) => {
       {isOpen && (
         <div
           ref={dropdownRef}
-          className="absolute right-0 min-w-fit pl-5 bg-dark max-h-52 overflow-y-auto overflow-x-hidden"
+          className="absolute right-0 min-w-fit pl-5 bg-dark max-h-52 overflow-y-auto overflow-x-hidden z-50"
         >
-          <ol className="list-decimal p-5">
+          <ol className="list-decimal p-7">
             {list &&
               list.map((station) => (
                 <li key={station.id}>
