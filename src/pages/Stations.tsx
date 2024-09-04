@@ -8,8 +8,7 @@ import ModalForm from '../components/AddPinForm';
 import { useNavigate } from 'react-router-dom';
 import useMarkers from '../hooks/useMarkers';
 import Chip from '../components/Chips';
-import useSpinner from '../hooks/useSpinner';
-import ListOffline from '../components/Stations/ListOffline';
+import StatusCounter from '../components/Stations/StatusCounter';
 
 const Stations = () => {
   const [isEditor, setIsEditor] = useState<boolean | undefined>(false);
@@ -22,7 +21,6 @@ const Stations = () => {
     setFilteredMarkers,
   } = useMarkers();
 
-  const { showSpinner, setShowSpinner } = useSpinner();
   const [searchValue, setSearchValue] = useState<string>('');
   const [currentStationType, setCurrentStationType] =
     useState<string>('stations');
@@ -85,21 +83,19 @@ const Stations = () => {
   const closeModal = () => setModalOpen(false);
 
   const fetchOtherStations = async (type: string) => {
-    setShowSpinner(true);
     setCurrentStationType(type);
     // console.log(type);
     // const { data } = await fetchService.get<MarkerType[]>(type);
     // data && markers && setMarkers(data);
-    setTimeout(() => {
-      setShowSpinner(false);
-    }, 7500);
   };
 
   const searchForStation = async () => {
     if (searchValue) {
-      const { data } = await fetchService.get<MarkerType[]>(
-        `search/?id=${searchValue}`
-      );
+      let query: string = '';
+      isNaN(Number(searchValue))
+        ? (query = `type=string&value=${searchValue}`)
+        : (query = `type=number&value=${searchValue}`);
+      const { data } = await fetchService.get<MarkerType[]>(`search/?${query}`);
       data && setSearchStationData(data[0]);
     }
   };
@@ -210,12 +206,12 @@ const Stations = () => {
             </button>
             <ModalForm isOpen={isModalOpen} onClose={closeModal} />
 
-            <button
+            {/* <button
               className="rounded-xl py-2 px-4 border bg-red-600"
               onClick={() => window.location.reload()}
             >
               Restart vise stanica
-            </button>
+            </button> */}
 
             <input
               type="text"
@@ -239,7 +235,6 @@ const Stations = () => {
             <button
               onClick={async () => {
                 await getMarkersByIds(chips);
-                setShowSpinner(true);
               }}
               disabled={chips.length === 0}
               className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
@@ -249,14 +244,14 @@ const Stations = () => {
           </div>
         </div>
         <div className="xl:w-[75%]  w-full relative">
-          {showSpinner && (
+          {/* {showSpinner && (
             <div className="absolute inset-0 flex items-center justify-center bg-gray-800 bg-opacity-75 z-10">
               <div className="bg-white p-5 rounded-lg">
                 <div className="loader ease-linear rounded-full border-8 border-t-8 border-gray-200 h-20 w-20"></div>
                 <p className="mt-2 text-gray-700 text-center">Loading..</p>
               </div>
             </div>
-          )}
+          )} */}
           <h2 className="text-white text-2xl font-semibold text-center mb-5">
             {getCurrentStationTypeHeadline()}
           </h2>
@@ -264,7 +259,7 @@ const Stations = () => {
         </div>
         <div className="text-white xl:w-[15%] w-full self-start my-6">
           <Counter />
-          <ListOffline />
+          <StatusCounter />
         </div>
       </div>
     </div>

@@ -7,8 +7,10 @@ export interface MarkerType {
   zona: string;
   statusLabel: string;
   log: string;
-  voltage: number;
+  voltage?: number;
   temp: number;
+  ip: string;
+  amp?: number;
 }
 
 export interface MarkerHistory {

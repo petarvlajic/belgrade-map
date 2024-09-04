@@ -1,5 +1,6 @@
-import { create } from "zustand";
-import { MarkerType } from "../types/Marker";
+import { create } from 'zustand';
+import { MarkerType } from '../types/Marker';
+import fetchService from '../services/api';
 
 interface State {
   markers: MarkerType[] | null;
@@ -40,9 +41,10 @@ const useMarkers = create<State>((set) => ({
   },
   getMarkersByStatus: async (status: number) => {
     const state = useMarkers.getState() as State; // Accessing the state
-    const filteredMarkers =
-      state.markers?.filter((marker) => marker.status === status) || null;
-    set(() => ({ filteredMarkers })); // Set filteredMarkers state
+    const response = await fetchService.get(`station/${status}`);
+    const filteredMarkers = response.data;
+    // state.markers?.filter((marker) => marker.status === status) || null;
+    set(() => ({ filteredMarkers }));
   },
 }));
 

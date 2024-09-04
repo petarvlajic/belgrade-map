@@ -44,7 +44,7 @@ const Services: FC = () => {
                   <button
                     type="button"
                     onClick={() => {
-                      fetchService.get('/resetall').then((res) => {
+                      fetchService.get('resetall').then((res) => {
                         console.log(res);
                       });
                     }}
@@ -65,7 +65,7 @@ const Services: FC = () => {
                   <button
                     type="button"
                     onClick={() => {
-                      fetchService.get('/resetall').then((res) => {
+                      fetchService.get('resetall').then((res) => {
                         console.log(res);
                       });
                     }}

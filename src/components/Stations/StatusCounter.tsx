@@ -2,7 +2,13 @@ import { FC, useEffect, useRef, useState } from 'react';
 import useMarkers from '../../hooks/useMarkers';
 import { MarkerType } from '../../types/Marker';
 
-const ListOffline: FC = () => {
+interface Props {
+  status: string;
+  count: number;
+  statusId: number;
+}
+
+const StatusCounter: FC<Props> = ({ status, count, statusId }) => {
   const [list, setList] = useState<MarkerType[] | null>([]);
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -10,10 +16,11 @@ const ListOffline: FC = () => {
   const { filteredMarkers, getMarkersByStatus } = useMarkers();
 
   const showList = () => {
-    getMarkersByStatus(2);
+    getMarkersByStatus(statusId);
   };
 
   useEffect(() => {
+    console.log(statusId);
     console.log(filteredMarkers);
     setList(filteredMarkers);
   }, [filteredMarkers]);
@@ -35,13 +42,13 @@ const ListOffline: FC = () => {
   return (
     <div className="w-full relative">
       <button
-        className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 w-full"
+        className="px-4 py-2  text-white rounded hover:text-blue-600 w-full text-left"
         onClick={() => {
           showList();
           setIsOpen((prev) => !prev);
         }}
       >
-        Izlistaj offline stanice
+        {status && `${status} : ${count}`}
       </button>
       {isOpen && (
         <div
@@ -64,4 +71,4 @@ const ListOffline: FC = () => {
   );
 };
 
-export default ListOffline;
+export default StatusCounter;

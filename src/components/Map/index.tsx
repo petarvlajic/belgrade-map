@@ -11,6 +11,7 @@ import { center, mapContainerStyle, mapOptions, mapPins } from './const';
 import { MarkerHistory, MarkerType } from '../../types/Marker';
 import useMarkers from '../../hooks/useMarkers';
 import useSpinner from '../../hooks/useSpinner';
+import { exportToCSV } from '../../lib/csvExport';
 
 interface PlanResponse {
   msg: string;
@@ -69,7 +70,7 @@ const Map: FC<Props> = ({ searchStation, markers }) => {
     setIsInfoWindowOpen(true);
   };
 
-  const handleStationFunction = async (type: 'SLP' | 'RBT' | 'ON') => {
+  const handleStationFunction = async (type: 'SLP' | 'RBT' | 'ON' | 'HW') => {
     const formData = new FormData();
     formData.append('id', `${pinInfoDetails?.id}`);
     formData.append('command', type);
@@ -80,6 +81,22 @@ const Map: FC<Props> = ({ searchStation, markers }) => {
       alert('Status stanice uspesno promenjen!');
       changeMarkerStatus(pinInfoDetails.id, data.status);
     }
+  };
+
+  const handleExport = () => {
+    // const data = [
+    //   { name: 'John Doe', age: 30, city: 'New York' },
+    //   { name: 'Jane Doe', age: 25, city: 'Los Angeles' },
+    //   // Add more data as needed
+    // ];
+
+    const { id, name, status, statusLabel, log, amp, voltage, temp, ip } =
+      pinInfoDetails || {};
+    console.log(pinInfoDetails);
+    exportToCSV(
+      [{ id, name, status, statusLabel, log, amp, voltage, temp, ip }],
+      `${pinInfoDetails?.id}` || 'stanica'
+    );
   };
 
   const planStation = async () => {
@@ -95,6 +112,14 @@ const Map: FC<Props> = ({ searchStation, markers }) => {
     } else {
       alert('Greska prilikom planiranja stanice!');
     }
+  };
+
+  const getPlot = async () => {
+    const { data } = await fetchService.get<unknown>(
+      `station-history-power/${pinInfoDetails?.id}`
+    );
+
+    console.log(data);
   };
 
   return (
@@ -159,6 +184,10 @@ const Map: FC<Props> = ({ searchStation, markers }) => {
                 <p>{pinInfoDetails.name}</p>
               </li>
               <li className="flex gap-2">
+                <p className="font-semibold">IP:</p>
+                <p>{pinInfoDetails.ip}</p>
+              </li>
+              <li className="flex gap-2">
                 <p className="font-semibold">Temperatura:</p>
                 <p>{pinInfoDetails.temp}</p>
               </li>
@@ -207,7 +236,7 @@ const Map: FC<Props> = ({ searchStation, markers }) => {
             {(pinInfoDetails.status === 1 ||
               pinInfoDetails.status === 3 ||
               pinInfoDetails.status === 2) && (
-              <div className="flex gap-3 justify-center my-3">
+              <div className="flex gap-3 justify-center my-3 flex-wrap">
                 <button
                   className="bg-green-500 rounded-md p-3 text-white font-bold"
                   onClick={() => handleStationFunction('ON')}
@@ -227,8 +256,20 @@ const Map: FC<Props> = ({ searchStation, markers }) => {
                   Restart
                 </button>
                 <button
+                  className="bg-blue-500 rounded-md p-3 text-white font-bold"
+                  onClick={() => handleStationFunction('HW')}
+                >
+                  HW Restart
+                </button>
+                <button
+                  className="bg-blue-500 rounded-md p-3 text-white font-bold"
+                  onClick={getPlot}
+                >
+                  Plot
+                </button>
+                <button
                   className="bg-gray-300 rounded-md p-3 text-white font-bold"
-                  // onClick={() => handleStationFunction('RBT')}
+                  onClick={handleExport}
                 >
                   Preuzmi Logove
                 </button>
