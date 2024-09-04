@@ -4,7 +4,7 @@ interface ApiResponse<T> {
   status?: number;
 }
 
-const apiUrl = `${location.protocol}//api.test.sodalis.rs/api`;
+const apiUrl = `http://api.test.sodalis.rs/api`;
 
 const fetchService = {
   get: async <T>(endpoint: string): Promise<ApiResponse<T>> => {
