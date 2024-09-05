@@ -14,6 +14,7 @@
     "@types/file-saver": "^2.0.7",
     "@types/papaparse": "^5.3.14",
     "file-saver": "^2.0.5",
+    "jwt-decode": "^4.0.0",
     "marker-clusterer-plus": "^2.1.4",
     "papaparse": "^5.4.1",
     "react": "^18.2.0",

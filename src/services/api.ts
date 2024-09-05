@@ -4,7 +4,7 @@ interface ApiResponse<T> {
   status?: number;
 }
 
-const apiUrl = `http://api.test.sodalis.rs/api`;
+const apiUrl = `${location.protocol}//api.test.sodalis.rs/api`;
 
 const fetchService = {
   get: async <T>(endpoint: string): Promise<ApiResponse<T>> => {
@@ -16,6 +16,7 @@ const fetchService = {
           Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
       });
+      console.log('ODGG', response);
       const data = await response.json();
       return { data, status: response.status };
     } catch (error) {

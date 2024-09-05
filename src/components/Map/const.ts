@@ -28,8 +28,10 @@ export const mapPins: string[] = [
   'https://maps.google.com/mapfiles/ms/icons/orange-dot.png',
   'https://maps.google.com/mapfiles/ms/icons/pink-dot.png',
   'https://maps.google.com/mapfiles/ms/icons/purple-dot.png',
-  'http://alma.sodalis.rs/navy-dot.png',
+  'navy-black.png',
   'https://maps.google.com/mapfiles/ms/icons/yellow-dot.png',
-  'https://maps.google.com/mapfiles/ms/icons/blue-dot.pang',
-  'https://maps.google.com/mapfiles/ms/icons/blue-dot.pang',
+  'black-dot.png',
+  'blue-dot.png',
+  'https://maps.google.com/mapfiles/ms/icons/purple-dot.png',
+  'baby-blue-dot.png',
 ];
