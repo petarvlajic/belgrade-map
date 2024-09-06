@@ -10,8 +10,9 @@ const fetchService = {
   get: async <T>(endpoint: string): Promise<ApiResponse<T>> => {
     try {
       const response = await fetch(`${apiUrl}/${endpoint}`, {
+        credentials: 'include',
         headers: {
-          cors: 'no-cors',
+          // cors: 'no-cors',
           // 'Access-Control-Allow-Origin': 'no-cors',
           Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
@@ -43,10 +44,12 @@ const fetchService = {
       }
 
       const response = await fetch(`${apiUrl}/${endpoint}`, {
+        credentials: 'include',
         method: 'POST',
         headers: headers,
         body: body,
       });
+      console.log(response);
 
       const data = await response.json();
       return { data, status: response.status };
