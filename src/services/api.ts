@@ -4,7 +4,7 @@ interface ApiResponse<T> {
   status?: number;
 }
 
-const apiUrl = `${location.protocol}//api.innsoldoo.com/`;
+const apiUrl = `${location.protocol}//api.innsoldoo.com/api`;
 
 const fetchService = {
   get: async <T>(endpoint: string): Promise<ApiResponse<T>> => {
