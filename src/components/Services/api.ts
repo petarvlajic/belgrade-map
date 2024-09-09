@@ -1,41 +1,21 @@
-import { jwtDecode } from 'jwt-decode';
 import fetchService from '../../services/api';
-import { WorkOrder } from './types';
+import { User, WorkOrder } from './types';
 
-export const addWorkOrder = async (Description: string, StationId: number) => {
-  const token = localStorage.getItem('token');
+export const addWorkOrder = async (
+  Description: string,
+  StationId: string,
+  UserId: string
+) => {
+  const formData = new FormData();
+  formData.append('Description', Description);
+  formData.append('StationId', StationId.toString());
+  formData.append('UserId', UserId.toString());
 
-  type JwtPayload = {
-    name: string;
-    admin: string;
-    exp: number;
-    iss: string;
-    aud: string;
-  };
-
-  if (token) {
-    const decodedToken = jwtDecode<JwtPayload>(token);
-
-    // Access the information you need
-    const UserId = decodedToken.name;
-
-    const body = {
-      StationId,
-      UserId,
-      Description,
-    };
-
-    // Create a new FormData object
-    const formData = new FormData();
-
-    // Append key-value pairs from the body object
-    Object.keys(body).forEach((key) => {
-      formData.append(key, body[key]);
-    });
-    const response = await fetchService.post('add-history', formData);
-    console.log(response);
-  }
+  const response = await fetchService.post('add-work-order', formData);
+  console.log(response.data);
 };
 
 export const getWorkOrders = async () =>
   await fetchService.get<WorkOrder[]>('work-order');
+
+export const getUsers = async () => await fetchService.get<User[]>('users');

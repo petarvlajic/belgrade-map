@@ -1,7 +1,43 @@
-import { FC } from 'react';
+import { FC, useEffect, useState } from 'react';
 import fetchService from '../../services/api';
+import Modal from '../Modal';
+import { useModalStore } from '../Modal/hooks/useModal';
+import { User } from './types';
+import { getUsers } from './api';
+import AddWorkOrderForm from './AddWorkOrderForm';
 
 const TableHeader: FC = () => {
+  const [users, setUsers] = useState<User[]>([]);
+  const [isFilterDropdownOpen, setIsFilterDropdownOpen] = useState(false);
+  const [filters, setFilters] = useState<string[]>([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await getUsers();
+        response.data && setUsers(response.data);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  const { openModal } = useModalStore();
+
+  const toggleFilterDropdown = () => {
+    setIsFilterDropdownOpen(!isFilterDropdownOpen);
+  };
+
+  const handleFilterChange = (filter: string) => {
+    setFilters((prevFilters) =>
+      prevFilters.includes(filter)
+        ? prevFilters.filter((f) => f !== filter)
+        : [...prevFilters, filter]
+    );
+  };
+
   return (
     <div className="flex flex-col md:flex-row items-center justify-between space-y-3 md:space-y-0 md:space-x-4 p-4">
       <div className="w-full md:w-1/2">
@@ -83,6 +119,9 @@ const TableHeader: FC = () => {
         </button>
         <button
           type="button"
+          onClick={() => {
+            openModal('add-work-order');
+          }}
           className="flex items-center justify-center text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-primary-600 dark:hover:bg-primary-700 focus:outline-none dark:focus:ring-primary-800"
         >
           <svg
@@ -95,180 +134,76 @@ const TableHeader: FC = () => {
             <path
               clipRule="evenodd"
               fillRule="evenodd"
-              d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z"
+              d="M10 5a1 1 0 01 1 1v3h3a1 1 0 010 2h-3v3a1 1 0 01-2 0v-3H6a1 1 0 010-2h3V6a1 1 0 011-1z"
             />
           </svg>
-          Dodaj Nalog
+          Dodaj nalog za rad
         </button>
-        <div className="flex items-center space-x-3 w-full md:w-auto">
-          <button
-            id="actionsDropdownButton"
-            data-dropdown-toggle="actionsDropdown"
-            className="w-full md:w-auto flex items-center justify-center py-2 px-4 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
-            type="button"
-          >
-            <svg
-              className="-ml-1 mr-1.5 w-5 h-5"
-              fill="currentColor"
-              viewBox="0 0 20 20"
-              xmlns="http://www.w3.org/2000/svg"
-              aria-hidden="true"
+        <div className="relative inline-block text-left">
+          <div>
+            <button
+              type="button"
+              className="flex items-center justify-center text-gray-900 bg-white hover:bg-gray-200 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-gray-700 dark:text-gray-400 dark:hover:bg-gray-600 dark:hover:text-white"
+              onClick={toggleFilterDropdown}
             >
-              <path
-                clipRule="evenodd"
-                fillRule="evenodd"
-                d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-              />
-            </svg>
-            Actions
-          </button>
-          <div
-            id="actionsDropdown"
-            className="hidden z-10 w-44 bg-white rounded divide-y divide-gray-100 shadow dark:bg-gray-700 dark:divide-gray-600"
-          >
-            <ul
-              className="py-1 text-sm text-gray-700 dark:text-gray-200"
-              aria-labelledby="actionsDropdownButton"
-            >
-              <li>
-                <a
-                  href="#"
-                  className="block py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                >
-                  Mass Edit
-                </a>
-              </li>
-            </ul>
-            <div className="py-1">
-              <a
-                href="#"
-                className="block py-2 px-4 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
+              Filteri
+              <svg
+                className="ml-2 w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
               >
-                Delete all
-              </a>
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M19 9l-7 7-7-7"
+                />
+              </svg>
+            </button>
+          </div>
+
+          {isFilterDropdownOpen && (
+            <div className="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
+              <div className="py-1">
+                <label className="flex items-center px-4 py-2">
+                  <input
+                    type="checkbox"
+                    className="form-checkbox h-4 w-4"
+                    onChange={() => handleFilterChange('filter1')}
+                    checked={filters.includes('filter1')}
+                  />
+                  <span className="ml-2 text-sm text-gray-700">Filter 1</span>
+                </label>
+                <label className="flex items-center px-4 py-2">
+                  <input
+                    type="checkbox"
+                    className="form-checkbox h-4 w-4"
+                    onChange={() => handleFilterChange('filter2')}
+                    checked={filters.includes('filter2')}
+                  />
+                  <span className="ml-2 text-sm text-gray-700">Filter 2</span>
+                </label>
+                <label className="flex items-center px-4 py-2">
+                  <input
+                    type="checkbox"
+                    className="form-checkbox h-4 w-4"
+                    onChange={() => handleFilterChange('filter3')}
+                    checked={filters.includes('filter3')}
+                  />
+                  <span className="ml-2 text-sm text-gray-700">Filter 3</span>
+                </label>
+              </div>
             </div>
-          </div>
-          <button
-            id="filterDropdownButton"
-            data-dropdown-toggle="filterDropdown"
-            className="w-full md:w-auto flex items-center justify-center py-2 px-4 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
-            type="button"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              aria-hidden="true"
-              className="h-4 w-4 mr-2 text-gray-400"
-              viewBox="0 0 20 20"
-              fill="currentColor"
-            >
-              <path
-                fillRule="evenodd"
-                d="M3 3a1 1 0 011-1h12a1 1 0 011 1v3a1 1 0 01-.293.707L12 11.414V15a1 1 0 01-.293.707l-2 2A1 1 0 018 17v-5.586L3.293 6.707A1 1 0 013 6V3z"
-                clipRule="evenodd"
-              />
-            </svg>
-            Filter
-            <svg
-              className="-mr-1 ml-1.5 w-5 h-5"
-              fill="currentColor"
-              viewBox="0 0 20 20"
-              xmlns="http://www.w3.org/2000/svg"
-              aria-hidden="true"
-            >
-              <path
-                clipRule="evenodd"
-                fillRule="evenodd"
-                d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-              />
-            </svg>
-          </button>
-          <div
-            id="filterDropdown"
-            className="z-10 hidden w-48 p-3 bg-white rounded-lg shadow dark:bg-gray-700"
-          >
-            <h6 className="mb-3 text-sm font-medium text-gray-900 dark:text-white">
-              Choose brand
-            </h6>
-            <ul
-              className="space-y-2 text-sm"
-              aria-labelledby="filterDropdownButton"
-            >
-              <li className="flex items-center">
-                <input
-                  id="apple"
-                  type="checkbox"
-                  value=""
-                  className="w-4 h-4 bg-gray-100 border-gray-300 rounded text-primary-600 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500"
-                />
-                <label
-                  htmlFor="apple"
-                  className="ml-2 text-sm font-medium text-gray-900 dark:text-gray-100"
-                >
-                  Apple (56)
-                </label>
-              </li>
-              <li className="flex items-center">
-                <input
-                  id="fitbit"
-                  type="checkbox"
-                  value=""
-                  className="w-4 h-4 bg-gray-100 border-gray-300 rounded text-primary-600 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500"
-                />
-                <label
-                  htmlFor="fitbit"
-                  className="ml-2 text-sm font-medium text-gray-900 dark:text-gray-100"
-                >
-                  Microsoft (16)
-                </label>
-              </li>
-              <li className="flex items-center">
-                <input
-                  id="razor"
-                  type="checkbox"
-                  value=""
-                  className="w-4 h-4 bg-gray-100 border-gray-300 rounded text-primary-600 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500"
-                />
-                <label
-                  htmlFor="razor"
-                  className="ml-2 text-sm font-medium text-gray-900 dark:text-gray-100"
-                >
-                  Razor (49)
-                </label>
-              </li>
-              <li className="flex items-center">
-                <input
-                  id="nikon"
-                  type="checkbox"
-                  value=""
-                  className="w-4 h-4 bg-gray-100 border-gray-300 rounded text-primary-600 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500"
-                />
-                <label
-                  htmlFor="nikon"
-                  className="ml-2 text-sm font-medium text-gray-900 dark:text-gray-100"
-                >
-                  Nikon (12)
-                </label>
-              </li>
-              <li className="flex items-center">
-                <input
-                  id="benq"
-                  type="checkbox"
-                  value=""
-                  className="w-4 h-4 bg-gray-100 border-gray-300 rounded text-primary-600 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500"
-                />
-                <label
-                  htmlFor="benq"
-                  className="ml-2 text-sm font-medium text-gray-900 dark:text-gray-100"
-                >
-                  BenQ (74)
-                </label>
-              </li>
-            </ul>
-          </div>
+          )}
         </div>
       </div>
+      {/* Modal Component for Adding Work Order */}
+      <Modal modalKey="add-work-order" headline="Dodaj nalog za rad">
+        <AddWorkOrderForm users={users} />
+      </Modal>
     </div>
   );
 };
-
 export default TableHeader;

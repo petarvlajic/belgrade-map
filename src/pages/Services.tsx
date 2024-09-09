@@ -13,7 +13,7 @@ const Services: FC = () => {
               <div className="overflow-x-auto">
                 <Table />
               </div>
-              <nav
+              {/* <nav
                 className="flex flex-col md:flex-row justify-between items-start md:items-center space-y-3 md:space-y-0 p-4"
                 aria-label="Table navigation"
               >
@@ -112,7 +112,7 @@ const Services: FC = () => {
                     </a>
                   </li>
                 </ul>
-              </nav>
+              </nav> */}
             </div>
           </div>
         </section>

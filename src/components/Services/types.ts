@@ -10,4 +10,13 @@ export interface WorkOrder {
   Status: number;
   StatusLabel: string;
   UserId: number;
+  pathBefore: string;
+  pathAfter: string;
+}
+
+export interface User {
+  ID: number;
+  Username: string;
+  Password: string | null;
+  Role: string | null;
 }

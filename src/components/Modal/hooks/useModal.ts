@@ -1,7 +1,11 @@
 import { ReactElement } from 'react';
 import { create } from 'zustand';
 
-type ModalKeys = 'workOrder-fix' | 'workOrder-info';
+type ModalKeys =
+  | 'workOrder-fix'
+  | 'workOrder-info'
+  | 'add-comment-modal'
+  | 'add-work-order';
 
 type ModalState = {
   openModal: (key: ModalKeys, state?: unknown, headline?: ReactElement) => void;

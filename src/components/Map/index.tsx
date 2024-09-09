@@ -12,8 +12,10 @@ import { MarkerHistory, MarkerType } from '../../types/Marker';
 import useMarkers from '../../hooks/useMarkers';
 import useSpinner from '../../hooks/useSpinner';
 import { exportToCSV } from '../../lib/csvExport';
+
 import Modal from '../Modal';
 import { addComment } from './api';
+import { useModalStore } from '../Modal/hooks/useModal';
 
 interface PlanResponse {
   msg: string;
@@ -45,6 +47,8 @@ const Map: FC<Props> = ({ searchStation, markers }) => {
 
   const { setShowSpinner } = useSpinner();
   const { deleteMarker, changeMarkerStatus } = useMarkers();
+
+  const { openModal } = useModalStore();
 
   useEffect(() => {
     const fetchPinDetails = async () => {
@@ -132,139 +136,140 @@ const Map: FC<Props> = ({ searchStation, markers }) => {
   };
 
   return (
-    <GoogleMap
-      key={markers?.length} // Adding key to force re-render
-      mapContainerStyle={mapContainerStyle}
-      zoom={searchStation ? 20 : 12}
-      center={
-        searchStation
-          ? { lat: searchStation.gpsx, lng: searchStation.gpsy }
-          : center
-      }
-      options={mapOptions}
-    >
-      <MarkerClusterer
-        imagePath="https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m1.png"
-        minimumClusterSize={2}
-        averageCenter={true}
-        gridSize={50}
-        maxZoom={15}
+    <>
+      <GoogleMap
+        key={markers?.length} // Adding key to force re-render
+        mapContainerStyle={mapContainerStyle}
+        zoom={searchStation ? 20 : 12}
+        center={
+          searchStation
+            ? { lat: searchStation.gpsx, lng: searchStation.gpsy }
+            : center
+        }
+        options={mapOptions}
       >
-        {(clusterer) => (
-          <div>
-            {markers?.map((pin) => {
-              return (
-                <Marker
-                  key={pin.id}
-                  position={{ lat: pin.gpsx, lng: pin.gpsy }}
-                  onClick={() => handlePinClick(pin)}
-                  label={{
-                    text: pin.id.toString(),
-                    className: 'mb-12',
-                  }}
-                  icon={{
-                    url: mapPins[pin.status],
-                  }}
-                  clusterer={clusterer}
-                />
-              );
-            })}
-          </div>
-        )}
-      </MarkerClusterer>
-
-      {isInfoWindowOpen && pinInfoDetails && (
-        <InfoWindow
-          position={{
-            lat: pinInfoDetails.gpsx,
-            lng: pinInfoDetails.gpsy,
-          }}
-          options={{ pixelOffset: new window.google.maps.Size(0, -35) }}
-          onCloseClick={() => setIsInfoWindowOpen(false)}
+        <MarkerClusterer
+          imagePath="https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m1.png"
+          minimumClusterSize={2}
+          averageCenter={true}
+          gridSize={50}
+          maxZoom={15}
         >
-          <div className="super">
-            <ul>
-              <li className="flex gap-2">
-                <p className="font-semibold">ID:</p>
-                <p>{pinInfoDetails.id}</p>
-              </li>
-              <li className="flex gap-2">
-                <p className="font-semibold">Naziv stajalista:</p>
-                <p>{pinInfoDetails.name}</p>
-              </li>
-              <li className="flex gap-2">
-                <p className="font-semibold">IP:</p>
-                <p>{pinInfoDetails.ip}</p>
-              </li>
-              <li className="flex gap-2">
-                <p className="font-semibold">Temperatura:</p>
-                <p>{pinInfoDetails.temp}</p>
-              </li>
-              <li className="flex gap-2">
-                <p className="font-semibold">Struja i Napon (HW):</p>
-                <p>{pinInfoDetails.voltage}</p>
-              </li>
-              <li className="flex gap-2">
-                <p className="font-semibold">Komentar:</p>
-                {/* <p>{pinInfoDetails.}</p> */}
-              </li>
-              <li className="flex gap-2">
-                <p className="font-semibold">Status</p>
-                <p>{pinInfoDetails.statusLabel}</p>
-              </li>
-            </ul>
-            {pinHistoryDetails?.length !== 0 && (
-              <table className=" border-blue-500 border-collapse">
-                <thead>
-                  <tr>
-                    <th>Status</th>
-                    <th>Username</th>
-                    <th>Date</th>
-                    <th>Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {pinHistoryDetails?.map((action) => (
-                    <tr
-                      key={action.id}
-                      className={`border text-center ${
-                        action.type === '1'
-                          ? 'bg-green-500 text-black'
-                          : 'bg-red-500 text-white'
-                      }`}
-                    >
-                      <td>{action.type}</td>
-                      <td>{action.username}</td>
-                      <td>{String(action.time)}</td>
-                      <td>{action.description}</td>
+          {(clusterer) => (
+            <div>
+              {markers?.map((pin) => {
+                return (
+                  <Marker
+                    key={pin.id}
+                    position={{ lat: pin.gpsx, lng: pin.gpsy }}
+                    onClick={() => handlePinClick(pin)}
+                    label={{
+                      text: pin.id.toString(),
+                      className: 'mb-12',
+                    }}
+                    icon={{
+                      url: mapPins[pin.status],
+                    }}
+                    clusterer={clusterer}
+                  />
+                );
+              })}
+            </div>
+          )}
+        </MarkerClusterer>
+
+        {isInfoWindowOpen && pinInfoDetails && (
+          <InfoWindow
+            position={{
+              lat: pinInfoDetails.gpsx,
+              lng: pinInfoDetails.gpsy,
+            }}
+            options={{ pixelOffset: new window.google.maps.Size(0, -35) }}
+            onCloseClick={() => setIsInfoWindowOpen(false)}
+          >
+            <div className="super">
+              <ul>
+                <li className="flex gap-2">
+                  <p className="font-semibold">ID:</p>
+                  <p>{pinInfoDetails.id}</p>
+                </li>
+                <li className="flex gap-2">
+                  <p className="font-semibold">Naziv stajalista:</p>
+                  <p>{pinInfoDetails.name}</p>
+                </li>
+                <li className="flex gap-2">
+                  <p className="font-semibold">IP:</p>
+                  <p>{pinInfoDetails.ip}</p>
+                </li>
+                <li className="flex gap-2">
+                  <p className="font-semibold">Temperatura:</p>
+                  <p>{pinInfoDetails.temp}</p>
+                </li>
+                <li className="flex gap-2">
+                  <p className="font-semibold">Struja i Napon (HW):</p>
+                  <p>{pinInfoDetails.voltage}</p>
+                </li>
+                <li className="flex gap-2">
+                  <p className="font-semibold">Komentar:</p>
+                  {/* <p>{pinInfoDetails.}</p> */}
+                </li>
+                <li className="flex gap-2">
+                  <p className="font-semibold">Status</p>
+                  <p>{pinInfoDetails.statusLabel}</p>
+                </li>
+              </ul>
+              {pinHistoryDetails?.length !== 0 && (
+                <table className=" border-blue-500 border-collapse">
+                  <thead>
+                    <tr>
+                      <th>Status</th>
+                      <th>Username</th>
+                      <th>Date</th>
+                      <th>Description</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            )}
-            {(pinInfoDetails.status === 1 ||
-              pinInfoDetails.status === 3 ||
-              pinInfoDetails.status === 2) && (
-              <div className="flex gap-3 justify-center my-3 flex-wrap">
-                <button
-                  className="bg-green-500 rounded-md p-3 text-white font-bold"
-                  onClick={() => handleStationFunction('ON')}
-                >
-                  Ukljuci
-                </button>
-                <button
-                  className="bg-red-500 rounded-md p-3 text-white font-bold"
-                  onClick={() => handleStationFunction('SLP')}
-                >
-                  Iskljuci
-                </button>
-                <button
-                  className="bg-blue-500 rounded-md p-3 text-white font-bold"
-                  onClick={() => handleStationFunction('RBT')}
-                >
-                  Restart
-                </button>
-                <button
+                  </thead>
+                  <tbody>
+                    {pinHistoryDetails?.map((action) => (
+                      <tr
+                        key={action.id}
+                        className={`border text-center ${
+                          action.type === '1'
+                            ? 'bg-green-500 text-black'
+                            : 'bg-red-500 text-white'
+                        }`}
+                      >
+                        <td>{action.type}</td>
+                        <td>{action.username}</td>
+                        <td>{String(action.time)}</td>
+                        <td>{action.description}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              )}
+              {(pinInfoDetails.status === 1 ||
+                pinInfoDetails.status === 3 ||
+                pinInfoDetails.status === 2) && (
+                <div className="flex gap-3 justify-center my-3 flex-wrap">
+                  <button
+                    className="bg-green-500 rounded-md p-3 text-white font-bold"
+                    onClick={() => handleStationFunction('ON')}
+                  >
+                    Ukljuci
+                  </button>
+                  <button
+                    className="bg-red-500 rounded-md p-3 text-white font-bold"
+                    onClick={() => handleStationFunction('SLP')}
+                  >
+                    Iskljuci
+                  </button>
+                  <button
+                    className="bg-blue-500 rounded-md p-3 text-white font-bold"
+                    onClick={() => handleStationFunction('RBT')}
+                  >
+                    Restart
+                  </button>
+                  {/* <button
                   className="bg-blue-500 rounded-md p-3 text-white font-bold"
                   onClick={() => handleStationFunction('HW')}
                 >
@@ -281,91 +286,97 @@ const Map: FC<Props> = ({ searchStation, markers }) => {
                   onClick={handleExport}
                 >
                   Preuzmi Logove
-                </button>
-                <button
-                  className="bg-gray-300 rounded-md p-3 text-white font-bold"
-                  onClick={handleOpenModal}
-                >
-                  Dodaj komentar
-                </button>
-              </div>
-            )}
-
-            {(pinInfoDetails.status === 0 ||
-              pinInfoDetails.status === 7 ||
-              pinInfoDetails.status === 6) && (
-              <div>
-                <button
-                  className="bg-green-500 rounded-md p-3 text-white font-bold my-3 w-full"
-                  onClick={planStation}
-                >
-                  {pinInfoDetails.status === 0 ? 'Planiraj' : ' Iskopana rupa'}
-                </button>
-              </div>
-            )}
-
-            {pinInfoDetails.status === 2 && (
-              <div>
-                <ul>
-                  <li>Posl. put online: {pinInfoDetails.log}</li>
-                  <li>Posl. temperatura: {pinInfoDetails.temp}</li>
-                  <li>Posl. struja: {pinInfoDetails.voltage}</li>
-                  <li>Posl. napon: {pinInfoDetails.voltage}</li>
-                </ul>
-              </div>
-            )}
-
-            <a
-              href={`https://www.google.com/maps/place/${pinInfoDetails.gpsx},${pinInfoDetails.gpsy}`}
-              target="_blank"
-              className="bg-blue-500 rounded-md p-3 text-white font-bold w-full block text-center"
-            >
-              Putanja
-            </a>
-            <Modal
-              isOpen={isModalOpen}
-              onClose={handleCloseModal}
-              title="Dodaj komentar"
-            >
-              <form>
-                <label
-                  htmlFor="message"
-                  className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                >
-                  Komentar
-                </label>
-                <textarea
-                  id="message"
-                  rows={4}
-                  className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                  placeholder="Napisi svoj komentar ovde"
-                  value={commentValue}
-                  onChange={(e) => setCommentValue(e.target.value)}
-                ></textarea>
-                <div className="my-2">
+                </button> */}
                   <button
-                    type="button"
-                    className="focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
+                    className="bg-gray-300 rounded-md p-3 text-white font-bold"
                     onClick={() => {
-                      addComment(commentValue, pinInfoDetails.id);
+                      openModal('add-comment-modal');
                     }}
                   >
-                    Dodaj
+                    Dodaj komentar
                   </button>
-                  <button
-                    onClick={handleCloseModal}
-                    type="button"
-                    className="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900"
+                  <a
+                    href={`https://www.google.com/maps/place/${pinInfoDetails.gpsx},${pinInfoDetails.gpsy}`}
+                    target="_blank"
+                    className="bg-blue-500 rounded-md p-3 text-white font-bold  block text-center"
                   >
-                    Odustani
+                    Putanja
+                  </a>
+                </div>
+              )}
+
+              {(pinInfoDetails.status === 0 ||
+                pinInfoDetails.status === 7 ||
+                pinInfoDetails.status === 6) && (
+                <div>
+                  <button
+                    className="bg-green-500 rounded-md p-3 text-white font-bold my-3 w-full"
+                    onClick={planStation}
+                  >
+                    {pinInfoDetails.status === 0
+                      ? 'Planiraj'
+                      : ' Iskopana rupa'}
                   </button>
                 </div>
-              </form>
-            </Modal>
+              )}
+
+              {pinInfoDetails.status === 2 && (
+                <div>
+                  <ul>
+                    <li className="flex gap-2">
+                      <p className="font-semibold">Poslednji put online:</p>
+                      {pinInfoDetails.log}
+                    </li>
+                    <li className="flex gap-2">
+                      <p className="font-semibold">Poslednja temperatura:</p>
+                      {pinInfoDetails.temp}
+                    </li>
+                    <li className="flex gap-2">
+                      <p className="font-semibold">Poslednja struja:</p>
+                      {pinInfoDetails.voltage}
+                    </li>
+                    <li className="flex gap-2">
+                      <p className="font-semibold">Poslednji napon:</p>
+                      {pinInfoDetails.voltage}
+                    </li>
+                  </ul>
+                </div>
+              )}
+            </div>
+          </InfoWindow>
+        )}
+      </GoogleMap>
+
+      <Modal modalKey="add-comment-modal" headline="Dodaj komentar">
+        <form>
+          <label
+            htmlFor="message"
+            className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+          >
+            Komentar
+          </label>
+          <textarea
+            id="message"
+            rows={4}
+            className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+            placeholder="Napisi svoj komentar ovde"
+            value={commentValue}
+            onChange={(e) => setCommentValue(e.target.value)}
+          ></textarea>
+          <div className="my-2">
+            <button
+              type="button"
+              className="focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
+              onClick={() => {
+                addComment(commentValue, pinInfoDetails.id);
+              }}
+            >
+              Dodaj
+            </button>
           </div>
-        </InfoWindow>
-      )}
-    </GoogleMap>
+        </form>
+      </Modal>
+    </>
   );
 };
 

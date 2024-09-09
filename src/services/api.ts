@@ -12,13 +12,12 @@ const fetchService = {
       const response = await fetch(`${apiUrl}/${endpoint}`, {
         credentials: 'include',
         headers: {
-          // cors: 'no-cors',
-          // 'Access-Control-Allow-Origin': 'no-cors',
           Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
       });
-      console.log('ODGG', response);
+
       const data = await response.json();
+      console.log(data);
       return { data, status: response.status };
     } catch (error) {
       return {
