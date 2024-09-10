@@ -1,4 +1,14 @@
+import { Link } from 'react-router-dom';
+import parseJwt from '../lib/parseJwt';
+import { useEffect, useState } from 'react';
+
 const Navbar = () => {
+  const [isEditor, setIsEditor] = useState(false);
+
+  useEffect(() => {
+    setIsEditor(parseJwt(localStorage.getItem('token')));
+  }, []);
+
   return (
     <nav className="bg-white border-gray-200 dark:bg-gray-900">
       <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
@@ -15,6 +25,17 @@ const Navbar = () => {
             ALMA QUATTRO
           </span>
         </a>
+
+        {isEditor && (
+          <div className="flex gap-6 items-center">
+            <Link className="text-white" to={'/map'}>
+              Map
+            </Link>
+            <Link className="text-white" to={'/services'}>
+              Services
+            </Link>
+          </div>
+        )}
       </div>
     </nav>
   );
