@@ -17,7 +17,6 @@ const fetchService = {
       });
 
       const data = await response.json();
-      console.log(data);
       return { data, status: response.status };
     } catch (error) {
       return {

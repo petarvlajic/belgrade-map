@@ -5,7 +5,9 @@ type ModalKeys =
   | 'workOrder-fix'
   | 'workOrder-info'
   | 'add-comment-modal'
-  | 'add-work-order';
+  | 'add-work-order'
+  | 'change-status'
+  | 'get-logs';
 
 type ModalState = {
   openModal: (key: ModalKeys, state?: unknown, headline?: ReactElement) => void;

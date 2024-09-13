@@ -64,7 +64,7 @@ const StatusCounter: FC<Props> = ({ status, count, statusId }) => {
             viewBox="0 0 16 16"
           >
             <path
-              fill-rule="evenodd"
+              fillRule="evenodd"
               d="M8 1a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L7.5 13.293V1.5A.5.5 0 0 1 8 1"
             />
           </svg>
@@ -73,7 +73,7 @@ const StatusCounter: FC<Props> = ({ status, count, statusId }) => {
       {isOpen && (
         <div
           ref={dropdownRef}
-          className="absolute right-0 min-w-fit pl-5 bg-dark max-h-52 overflow-y-auto overflow-x-hidden z-50"
+          className="absolute right-0 min-w-fit pl-5 bg-dark max-h-72 overflow-y-auto overflow-x-hidden z-50"
         >
           <ol className="list-decimal p-7">
             {list &&

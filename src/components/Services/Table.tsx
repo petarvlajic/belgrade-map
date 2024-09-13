@@ -62,7 +62,9 @@ const Table: FC = () => {
               <td className="px-4 py-3">{workOrder?.StationId}</td>
               <td className="px-4 py-3">{workOrder?.StatusLabel}</td>
               <td className="px-4 py-3">{workOrder?.Description}</td>
-              <td className="px-4 py-3">{workOrder?.CreatedTime}</td>
+              <td className="px-4 py-3">{`${
+                workOrder?.CreatedTime.split('T')[0]
+              } -  ${workOrder?.CreatedTime.split('T')[1]}`}</td>
               <td>
                 {workOrder?.Status == 1 && (
                   <>

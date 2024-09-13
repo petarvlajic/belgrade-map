@@ -34,11 +34,6 @@ const Map: FC<Props> = ({ searchStation, markers }) => {
     MarkerHistory[] | null
   >(null);
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
-  const handleOpenModal = () => setIsModalOpen(true);
-  const handleCloseModal = () => setIsModalOpen(false);
-
   const [commentValue, setCommentValue] = useState('');
 
   const { isLoaded, loadError } = useLoadScript({
@@ -97,12 +92,6 @@ const Map: FC<Props> = ({ searchStation, markers }) => {
   };
 
   const handleExport = () => {
-    // const data = [
-    //   { name: 'John Doe', age: 30, city: 'New York' },
-    //   { name: 'Jane Doe', age: 25, city: 'Los Angeles' },
-    //   // Add more data as needed
-    // ];
-
     const { id, name, status, statusLabel, log, amp, voltage, temp, ip } =
       pinInfoDetails || {};
     console.log(pinInfoDetails);
@@ -138,7 +127,7 @@ const Map: FC<Props> = ({ searchStation, markers }) => {
   return (
     <>
       <GoogleMap
-        key={markers?.length} // Adding key to force re-render
+        key={markers?.length}
         mapContainerStyle={mapContainerStyle}
         zoom={searchStation ? 20 : 12}
         center={
@@ -211,7 +200,6 @@ const Map: FC<Props> = ({ searchStation, markers }) => {
                 </li>
                 <li className="flex gap-2">
                   <p className="font-semibold">Komentar:</p>
-                  {/* <p>{pinInfoDetails.}</p> */}
                 </li>
                 <li className="flex gap-2">
                   <p className="font-semibold">Status</p>
@@ -250,7 +238,7 @@ const Map: FC<Props> = ({ searchStation, markers }) => {
               {(pinInfoDetails.status === 1 ||
                 pinInfoDetails.status === 3 ||
                 pinInfoDetails.status === 2) && (
-                <div className="flex gap-3 justify-center my-3 flex-wrap">
+                <div className="grid  grid-cols-3 gap-3 justify-center my-3">
                   <button
                     className="bg-green-500 rounded-md p-3 text-white font-bold"
                     onClick={() => handleStationFunction('ON')}
@@ -269,26 +257,8 @@ const Map: FC<Props> = ({ searchStation, markers }) => {
                   >
                     Restart
                   </button>
-                  {/* <button
-                  className="bg-blue-500 rounded-md p-3 text-white font-bold"
-                  onClick={() => handleStationFunction('HW')}
-                >
-                  HW Restart
-                </button>
-                <button
-                  className="bg-blue-500 rounded-md p-3 text-white font-bold"
-                  onClick={getPlot}
-                >
-                  Plot
-                </button>
-                <button
-                  className="bg-gray-300 rounded-md p-3 text-white font-bold"
-                  onClick={handleExport}
-                >
-                  Preuzmi Logove
-                </button> */}
                   <button
-                    className="bg-gray-300 rounded-md p-3 text-white font-bold"
+                    className="bg-gray-300 rounded-md p-3 col-span-2 text-white font-bold"
                     onClick={() => {
                       openModal('add-comment-modal');
                     }}
@@ -315,7 +285,7 @@ const Map: FC<Props> = ({ searchStation, markers }) => {
                   >
                     {pinInfoDetails.status === 0
                       ? 'Planiraj'
-                      : ' Iskopana rupa'}
+                      : ' Iskopana rupa'}
                   </button>
                 </div>
               )}
@@ -379,5 +349,4 @@ const Map: FC<Props> = ({ searchStation, markers }) => {
     </>
   );
 };
-
 export default Map;

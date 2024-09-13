@@ -8,7 +8,6 @@ import ModalForm from '../components/AddPinForm';
 import { useNavigate } from 'react-router-dom';
 import useMarkers from '../hooks/useMarkers';
 import Chip from '../components/Chips';
-import StatusCounter from '../components/Stations/StatusCounter';
 
 const Stations = () => {
   const [isEditor, setIsEditor] = useState<boolean | undefined>(false);
@@ -54,7 +53,6 @@ const Stations = () => {
     const checkJWT = async () => {
       try {
         const { status } = await fetchService.get<MarkerType[]>('login/ping');
-        console.log(status);
         if (status == 401) {
           navigate('/');
         }
@@ -279,14 +277,6 @@ const Stations = () => {
           </div>
         </div>
         <div className="xl:w-[75%]  w-full relative">
-          {/* {showSpinner && (
-            <div className="absolute inset-0 flex items-center justify-center bg-gray-800 bg-opacity-75 z-10">
-              <div className="bg-white p-5 rounded-lg">
-                <div className="loader ease-linear rounded-full border-8 border-t-8 border-gray-200 h-20 w-20"></div>
-                <p className="mt-2 text-gray-700 text-center">Loading..</p>
-              </div>
-            </div>
-          )} */}
           <h2 className="text-white text-2xl font-semibold text-center mb-5">
             {getCurrentStationTypeHeadline()}
           </h2>
@@ -294,7 +284,6 @@ const Stations = () => {
         </div>
         <div className="text-white xl:w-[15%] w-full self-start my-6">
           <Counter />
-          <StatusCounter />
         </div>
       </div>
     </div>
