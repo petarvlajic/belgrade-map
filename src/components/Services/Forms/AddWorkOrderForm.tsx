@@ -1,6 +1,6 @@
 import { FC, useState } from 'react';
-import { addWorkOrder } from './api';
-import { User } from './types';
+import { addWorkOrder } from '../api';
+import { User } from '../types';
 
 interface Props {
   users: User[];

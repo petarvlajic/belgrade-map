@@ -16,6 +16,7 @@ import { exportToCSV } from '../../lib/csvExport';
 import Modal from '../Modal';
 import { addComment } from './api';
 import { useModalStore } from '../Modal/hooks/useModal';
+import parseJwt from '../../lib/parseJwt';
 
 interface PlanResponse {
   msg: string;
@@ -33,6 +34,7 @@ const Map: FC<Props> = ({ searchStation, markers }) => {
   const [pinHistoryDetails, setPinHistoryDetails] = useState<
     MarkerHistory[] | null
   >(null);
+  const [isViewer, setIsViewer] = useState<boolean | undefined>(false);
 
   const [commentValue, setCommentValue] = useState('');
 
@@ -46,6 +48,8 @@ const Map: FC<Props> = ({ searchStation, markers }) => {
   const { openModal } = useModalStore();
 
   useEffect(() => {
+    const data = parseJwt(localStorage.getItem('token'));
+    setIsViewer(data?.Role == 'Viewer');
     const fetchPinDetails = async () => {
       if (!pinInfoDetails) return;
       try {
@@ -74,6 +78,8 @@ const Map: FC<Props> = ({ searchStation, markers }) => {
   }
 
   const handlePinClick = (pinInfo: MarkerType) => {
+    if (isViewer) return;
+
     setPinInfoDetails(pinInfo);
     setIsInfoWindowOpen(true);
   };

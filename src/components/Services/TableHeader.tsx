@@ -4,9 +4,11 @@ import Modal from '../Modal';
 import { useModalStore } from '../Modal/hooks/useModal';
 import { User } from './types';
 import { applyAmberAlert, applyFlag, getLogs, getUsers } from './api';
-import AddWorkOrderForm from './AddWorkOrderForm';
-import ChangeMoreStationsForm from './ChangeMoreStationsForm';
-import GetLogsForm from './GetLogsForm';
+import AddWorkOrderForm from './Forms/AddWorkOrderForm';
+import ChangeMoreStationsForm from './Forms/ChangeMoreStationsForm';
+import GetLogsForm from './Forms/GetLogsForm';
+import HwRestartForm from './Forms/HwRestartForm';
+import PlotForm from './Forms/PlotForm';
 
 const TableHeader: FC = () => {
   const [users, setUsers] = useState<User[]>([]);
@@ -78,7 +80,7 @@ const TableHeader: FC = () => {
           onClick={() => {
             openModal('change-status');
           }}
-          className="flex items-center justify-center text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-primary-600 dark:hover:bg-primary-700 focus:outline-none dark:focus:ring-primary-800"
+          className="flex items-center justify-start text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-primary-600 dark:hover:bg-primary-700 focus:outline-none dark:focus:ring-primary-800"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -94,8 +96,54 @@ const TableHeader: FC = () => {
         </button>
         <button
           type="button"
+          onClick={() => {
+            openModal('hw-restart');
+          }}
+          className="flex  items-center justify-start text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-primary-600 dark:hover:bg-primary-700 focus:outline-none dark:focus:ring-primary-800"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            fill="currentColor"
+            className="bi bi-motherboard mr-2"
+            viewBox="0 0 16 16"
+          >
+            <path d="M11.5 2a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5m2 0a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5m-10 8a.5.5 0 0 0 0 1h6a.5.5 0 0 0 0-1zm0 2a.5.5 0 0 0 0 1h6a.5.5 0 0 0 0-1zM5 3a1 1 0 0 0-1 1h-.5a.5.5 0 0 0 0 1H4v1h-.5a.5.5 0 0 0 0 1H4a1 1 0 0 0 1 1v.5a.5.5 0 0 0 1 0V8h1v.5a.5.5 0 0 0 1 0V8a1 1 0 0 0 1-1h.5a.5.5 0 0 0 0-1H9V5h.5a.5.5 0 0 0 0-1H9a1 1 0 0 0-1-1v-.5a.5.5 0 0 0-1 0V3H6v-.5a.5.5 0 0 0-1 0zm0 1h3v3H5zm6.5 7a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h2a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5z" />
+            <path d="M1 2a2 2 0 0 1 2-2h11a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2v-2H.5a.5.5 0 0 1-.5-.5v-1A.5.5 0 0 1 .5 9H1V8H.5a.5.5 0 0 1-.5-.5v-1A.5.5 0 0 1 .5 6H1V5H.5a.5.5 0 0 1-.5-.5v-2A.5.5 0 0 1 .5 2zm1 11a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H3a1 1 0 0 0-1 1z" />
+          </svg>
+          HW Restart
+        </button>
+        <button
+          type="button"
+          onClick={() => {
+            openModal('plot-form');
+          }}
+          className="flex  items-center justify-start text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-primary-600 dark:hover:bg-primary-700 focus:outline-none dark:focus:ring-primary-800"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            fill="currentColor"
+            className="bi bi-box-arrow-in-down mr-2"
+            viewBox="0 0 16 16"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M3.5 6a.5.5 0 0 0-.5.5v8a.5.5 0 0 0 .5.5h9a.5.5 0 0 0 .5-.5v-8a.5.5 0 0 0-.5-.5h-2a.5.5 0 0 1 0-1h2A1.5 1.5 0 0 1 14 6.5v8a1.5 1.5 0 0 1-1.5 1.5h-9A1.5 1.5 0 0 1 2 14.5v-8A1.5 1.5 0 0 1 3.5 5h2a.5.5 0 0 1 0 1z"
+            />
+            <path
+              fill-rule="evenodd"
+              d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708z"
+            />
+          </svg>
+          Preuzmi Plot
+        </button>
+        <button
+          type="button"
           onClick={applyAmberAlert}
-          className="flex items-center justify-center text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-primary-600 dark:hover:bg-primary-700 focus:outline-none dark:focus:ring-primary-800"
+          className="flex  items-center justify-start text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-primary-600 dark:hover:bg-primary-700 focus:outline-none dark:focus:ring-primary-800"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -113,7 +161,7 @@ const TableHeader: FC = () => {
         <button
           type="button"
           onClick={applyFlag}
-          className="flex items-center justify-center text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-primary-600 dark:hover:bg-primary-700 focus:outline-none dark:focus:ring-primary-800"
+          className="flex items-center justify-start text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-primary-600 dark:hover:bg-primary-700 focus:outline-none dark:focus:ring-primary-800"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -130,11 +178,11 @@ const TableHeader: FC = () => {
         <button
           type="button"
           onClick={() => {
-            fetchService.get('resetall').then((res) => {
-              console.log(res);
+            fetchService.get('resetall').then(() => {
+              alert('Stanice su uspesno restartovane');
             });
           }}
-          className="flex items-center justify-center text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-primary-600 dark:hover:bg-primary-700 focus:outline-none dark:focus:ring-primary-800"
+          className="flex items-center justify-start text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-primary-600 dark:hover:bg-primary-700 focus:outline-none dark:focus:ring-primary-800"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -157,7 +205,7 @@ const TableHeader: FC = () => {
           onClick={() => {
             openModal('add-work-order');
           }}
-          className="flex items-center justify-center text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-primary-600 dark:hover:bg-primary-700 focus:outline-none dark:focus:ring-primary-800"
+          className="flex items-center justify-start text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-primary-600 dark:hover:bg-primary-700 focus:outline-none dark:focus:ring-primary-800"
         >
           <svg
             className="h-3.5 w-3.5 mr-2"
@@ -179,7 +227,7 @@ const TableHeader: FC = () => {
           onClick={() => {
             openModal('get-logs');
           }}
-          className="flex items-center justify-center text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-primary-600 dark:hover:bg-primary-700 focus:outline-none dark:focus:ring-primary-800"
+          className="flex items-center justify-start text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-primary-600 dark:hover:bg-primary-700 focus:outline-none dark:focus:ring-primary-800"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -198,7 +246,7 @@ const TableHeader: FC = () => {
         <div>
           <button
             type="button"
-            className="flex items-center justify-center text-gray-900 bg-white hover:bg-gray-200 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-gray-700 dark:text-gray-400 dark:hover:bg-gray-600 dark:hover:text-white"
+            className="flex items-center justify-start text-gray-900 bg-white hover:bg-gray-200 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-gray-700 dark:text-gray-400 dark:hover:bg-gray-600 dark:hover:text-white"
             onClick={toggleFilterDropdown}
           >
             Filteri
@@ -260,8 +308,14 @@ const TableHeader: FC = () => {
       <Modal modalKey="get-logs" headline="Preuzmi logove odredjene stanice">
         <GetLogsForm />
       </Modal>
+      <Modal modalKey="hw-restart" headline="HW restartuj stanicu">
+        <HwRestartForm />
+      </Modal>
       <Modal modalKey="change-status" headline="Promeni status stanica">
         <ChangeMoreStationsForm />
+      </Modal>
+      <Modal modalKey="plot-form" headline="Preuzmi Plot">
+        <PlotForm />
       </Modal>
     </div>
   );

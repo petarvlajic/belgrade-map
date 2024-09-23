@@ -13,7 +13,9 @@ export const addWorkOrder = async (
   formData.append('UserId', UserId.toString());
 
   const response = await fetchService.post('add-work-order', formData);
-  console.log(response.data);
+  if (response.data.success) {
+    alert('Radni nalog je uspesno kreiran!');
+  }
 };
 
 export const getWorkOrders = async () =>
@@ -27,7 +29,9 @@ export const applyAmberAlert = async () => {
   formData.append('command', 'AMB');
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { data } = await fetchService.post<any>('change-command', formData);
-  console.log(data);
+  if (data.success) {
+    alert('Amber alert uspesno primenjen!');
+  }
 };
 
 export const applyFlag = async () => {
@@ -36,7 +40,9 @@ export const applyFlag = async () => {
   formData.append('command', 'FLG');
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { data } = await fetchService.post<any>('change-command', formData);
-  console.log(data);
+  if (data.success) {
+    alert('Flag uspesno primenjen!');
+  }
 };
 
 interface FileResponse {
@@ -50,12 +56,10 @@ interface FileResponse {
 
 export const getLogs = async (id: string) => {
   const response = await fetchService.get<FileResponse>(`get-log/${id}`);
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  //@ts-expect-error
+
   const data = response?.data?.data;
 
   if (data && data.FileContents) {
-    console.log('ovo radi');
     const decodedContents = atob(data.FileContents);
     const parsedContents = decodedContents
       .split('\n')

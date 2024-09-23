@@ -1,5 +1,5 @@
 import { FC, useState, ChangeEvent, FormEvent } from 'react';
-import fetchService from '../../services/api';
+import fetchService from '../../../services/api';
 
 interface FormData {
   FixImageBefore: File | null;

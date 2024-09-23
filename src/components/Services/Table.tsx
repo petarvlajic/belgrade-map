@@ -3,7 +3,7 @@ import { getWorkOrders } from './api';
 import { WorkOrder } from './types';
 import Modal from '../Modal';
 import { useModalStore } from '../Modal/hooks/useModal';
-import AddOrderInfoForm from './AddOrderInfoForm';
+import AddOrderInfoForm from './Forms/AddOrderInfoForm';
 
 const Table: FC = () => {
   const [workOrders, setWorkOrders] = useState<

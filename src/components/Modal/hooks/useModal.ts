@@ -7,7 +7,9 @@ type ModalKeys =
   | 'add-comment-modal'
   | 'add-work-order'
   | 'change-status'
-  | 'get-logs';
+  | 'get-logs'
+  | 'hw-restart'
+  | 'plot-form';
 
 type ModalState = {
   openModal: (key: ModalKeys, state?: unknown, headline?: ReactElement) => void;

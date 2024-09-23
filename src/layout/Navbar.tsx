@@ -4,9 +4,11 @@ import { useEffect, useState } from 'react';
 
 const Navbar = () => {
   const [isEditor, setIsEditor] = useState(false);
-
+  const [isViewer, setIsViewer] = useState(false);
   useEffect(() => {
     setIsEditor(parseJwt(localStorage.getItem('token')));
+    const data = parseJwt(localStorage.getItem('token'));
+    setIsViewer(data?.Role == 'Viewer');
   }, []);
 
   return (
@@ -26,7 +28,7 @@ const Navbar = () => {
           </span>
         </a>
 
-        {isEditor && (
+        {isEditor && isViewer === false && (
           <div className="flex gap-6 items-center">
             <Link className="text-white" to={'/map'}>
               Map

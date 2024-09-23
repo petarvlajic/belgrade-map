@@ -1,5 +1,5 @@
 import { FC, FormEvent, useState } from 'react';
-import fetchService from '../../services/api';
+import fetchService from '../../../services/api';
 
 interface StatusInfo {
   statusId: number;
@@ -36,7 +36,9 @@ const ChangeMoreStationsForm: FC = () => {
       const response = await fetchService.get(
         `change-status?${queryParams.toString()}`
       );
-      console.log(response); // Added to use the response variable
+      if (response) {
+        alert('Status stanica uspesno promenjen!');
+      }
     } catch (error) {
       console.error('Error submitting form:', error);
     }

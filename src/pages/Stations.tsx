@@ -11,6 +11,7 @@ import Chip from '../components/Chips';
 
 const Stations = () => {
   const [isEditor, setIsEditor] = useState<boolean | undefined>(false);
+  const [isViewer, setIsViewer] = useState<boolean | undefined>(false);
   const navigate = useNavigate();
   const {
     markers,
@@ -39,6 +40,8 @@ const Stations = () => {
 
   useEffect(() => {
     setIsEditor(parseJwt(localStorage.getItem('token')));
+    const data = parseJwt(localStorage.getItem('token'));
+    setIsViewer(data?.Role == 'Viewer');
     const fetchData = async () => {
       try {
         const { data } = await fetchService.get<MarkerType[]>(
@@ -155,136 +158,140 @@ const Stations = () => {
   return (
     <div className="container mx-auto   mt-12">
       <div className="flex xl:flex-row flex-col gap-4">
-        <div className="xl:w-[20%] w-full">
-          <div className="justify-center  mt-4 flex gap-3 text-white flex-col">
-            <label
-              htmlFor="default-search"
-              className="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white"
-            >
-              Search
-            </label>
-            <div className="relative">
-              <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
-                <svg
-                  className="w-4 h-4 text-gray-500 dark:text-gray-400"
-                  aria-hidden="true"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 20 20"
-                >
-                  <path
-                    stroke="currentColor"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
-                  />
-                </svg>
-              </div>
-              <input
-                type="search"
-                id="default-search"
-                className="block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                placeholder="Search Mockups, Logos..."
-                required
-                onChange={handleSearchInputSearch}
-                value={searchValue}
-                onKeyDown={handleEnterKeyPress}
-              />
-              <button
-                type="submit"
-                className="text-white absolute end-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                onClick={searchForStation}
+        {isViewer === false && (
+          <div className="xl:w-[20%] w-full">
+            <div className="justify-center  mt-4 flex gap-3 text-white flex-col">
+              <label
+                htmlFor="default-search"
+                className="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white"
               >
                 Search
-              </button>
-            </div>
-
-            {isEditor && (
-              <div className="justify-center  mt-4 flex gap-3 text-white items-start flex-col">
+              </label>
+              <div className="relative">
+                <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+                  <svg
+                    className="w-4 h-4 text-gray-500 dark:text-gray-400"
+                    aria-hidden="true"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 20 20"
+                  >
+                    <path
+                      stroke="currentColor"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
+                    />
+                  </svg>
+                </div>
+                <input
+                  type="search"
+                  id="default-search"
+                  className="block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  placeholder="Search Mockups, Logos..."
+                  required
+                  onChange={handleSearchInputSearch}
+                  value={searchValue}
+                  onKeyDown={handleEnterKeyPress}
+                />
                 <button
-                  type="button"
-                  onClick={() => {
-                    window.location.reload();
-                  }}
-                  className="text-gray-900 w-full bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-2.5  mb-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700"
+                  type="submit"
+                  className="text-white absolute end-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                  onClick={searchForStation}
                 >
-                  Postavljene stanice
-                </button>
-
-                <button
-                  type="button"
-                  className="text-gray-900 w-full bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-2.5  mb-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700"
-                  onClick={() => fetchOtherStations('planed-stations')}
-                >
-                  Planirane stanice
-                </button>
-
-                <button
-                  type="button"
-                  className="text-gray-900 w-full bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-2.5  mb-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700"
-                  onClick={() => fetchOtherStations('wthout-plan-stations')}
-                >
-                  Neplanirane stanice
+                  Search
                 </button>
               </div>
-            )}
-            <button
-              type="button"
-              onClick={openModal}
-              className="focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5  mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
-            >
-              Dodaj novo stajaliste
-            </button>
 
-            <ModalForm isOpen={isModalOpen} onClose={closeModal} />
+              {isEditor && (
+                <div className="justify-center  mt-4 flex gap-3 text-white items-start flex-col">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      window.location.reload();
+                    }}
+                    className="text-gray-900 w-full bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-2.5  mb-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700"
+                  >
+                    Postavljene stanice
+                  </button>
 
-            {/* <button
+                  <button
+                    type="button"
+                    className="text-gray-900 w-full bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-2.5  mb-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700"
+                    onClick={() => fetchOtherStations('planed-stations')}
+                  >
+                    Planirane stanice
+                  </button>
+
+                  <button
+                    type="button"
+                    className="text-gray-900 w-full bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-2.5  mb-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700"
+                    onClick={() => fetchOtherStations('wthout-plan-stations')}
+                  >
+                    Neplanirane stanice
+                  </button>
+                </div>
+              )}
+              <button
+                type="button"
+                onClick={openModal}
+                className="focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5  mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
+              >
+                Dodaj novo stajaliste
+              </button>
+
+              <ModalForm isOpen={isModalOpen} onClose={closeModal} />
+
+              {/* <button
               className="rounded-xl py-2 px-4 border bg-red-600"
               onClick={() => window.location.reload()}
             >
               Restart vise stanica
             </button> */}
 
-            <input
-              type="text"
-              placeholder="Id stanice"
-              value={newChip}
-              onChange={(e) => setNewChip(e.target.value)}
-              className="border border-gray-300 rounded px-3 py-2  text-black"
-              onKeyDown={handleAddChip}
-            />
+              <input
+                type="text"
+                placeholder="Id stanice"
+                value={newChip}
+                onChange={(e) => setNewChip(e.target.value)}
+                className="border border-gray-300 rounded px-3 py-2  text-black"
+                onKeyDown={handleAddChip}
+              />
 
-            <div className="flex flex-wrap mt-4">
-              {chips.map((label, index) => (
-                <Chip
-                  key={index + label}
-                  label={`${label}`}
-                  onDelete={() => handleDelete(index)}
-                />
-              ))}
+              <div className="flex flex-wrap mt-4">
+                {chips.map((label, index) => (
+                  <Chip
+                    key={index + label}
+                    label={`${label}`}
+                    onDelete={() => handleDelete(index)}
+                  />
+                ))}
+              </div>
+
+              <button
+                onClick={async () => {
+                  await getMarkersByIds(chips);
+                }}
+                disabled={chips.length === 0}
+                className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+              >
+                Primeni prikaz odredjenih stranica
+              </button>
             </div>
-
-            <button
-              onClick={async () => {
-                await getMarkersByIds(chips);
-              }}
-              disabled={chips.length === 0}
-              className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-            >
-              Primeni prikaz odredjenih stranica
-            </button>
           </div>
-        </div>
+        )}
         <div className="xl:w-[75%]  w-full relative">
           <h2 className="text-white text-2xl font-semibold text-center mb-5">
             {getCurrentStationTypeHeadline()}
           </h2>
           <Map markers={displayedMarkers} searchStation={searchStationData} />
         </div>
-        <div className="text-white xl:w-[15%] w-full self-start my-6">
-          <Counter />
-        </div>
+        {isViewer === false && (
+          <div className="text-white xl:w-[15%] w-full self-start my-6">
+            <Counter />
+          </div>
+        )}
       </div>
     </div>
   );
