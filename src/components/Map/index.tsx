@@ -149,6 +149,36 @@ const Map: FC<Props> = ({ searchStation, markers }) => {
           averageCenter={true}
           gridSize={50}
           maxZoom={15}
+          styles={[
+            {
+              textColor: 'black',
+              height: 53,
+              url: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m1.png',
+              width: 53,
+              textSize: 12,
+            },
+            {
+              textColor: 'black',
+              height: 56,
+              url: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m1.png',
+              width: 56,
+              textSize: 12,
+            },
+            {
+              textColor: 'black',
+              height: 66,
+              url: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m1.png',
+              width: 66,
+              textSize: 12,
+            },
+            {
+              textColor: 'black',
+              height: 78,
+              url: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m1.png',
+              width: 78,
+              textSize: 12,
+            },
+          ]}
         >
           {(clusterer) => (
             <div>
