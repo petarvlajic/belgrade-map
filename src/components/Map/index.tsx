@@ -223,21 +223,28 @@ const Map: FC<Props> = ({ searchStation, markers }) => {
                     </tr>
                   </thead>
                   <tbody>
-                    {pinHistoryDetails?.map((action) => (
-                      <tr
-                        key={action.id}
-                        className={`border text-center ${
-                          action.type === '1'
-                            ? 'bg-green-500 text-black'
-                            : 'bg-red-500 text-white'
-                        }`}
-                      >
-                        <td>{action.type}</td>
-                        <td>{action.username}</td>
-                        <td>{String(action.time)}</td>
-                        <td>{action.description}</td>
+                    {Array.isArray(pinHistoryDetails) &&
+                    pinHistoryDetails.length > 0 ? (
+                      pinHistoryDetails.map((action) => (
+                        <tr
+                          key={action.id}
+                          className={`border text-center ${
+                            action.type === '1'
+                              ? 'bg-green-500 text-black'
+                              : 'bg-red-500 text-white'
+                          }`}
+                        >
+                          <td>{action.type}</td>
+                          <td>{action.username}</td>
+                          <td>{String(action.time)}</td>
+                          <td>{action.description}</td>
+                        </tr>
+                      ))
+                    ) : (
+                      <tr>
+                        <td>No data available</td>
                       </tr>
-                    ))}
+                    )}
                   </tbody>
                 </table>
               )}
@@ -277,6 +284,13 @@ const Map: FC<Props> = ({ searchStation, markers }) => {
                     className="bg-blue-500 rounded-md p-3 text-white font-bold  block text-center"
                   >
                     Putanja
+                  </a>
+                  <a
+                    href={`http://app.sodalis.rs/?id=${pinInfoDetails.id}`}
+                    target="_blank"
+                    className="bg-blue-500 rounded-md p-3 text-white font-bold  block text-center col-span-3"
+                  >
+                    Prikaz Uzivo
                   </a>
                 </div>
               )}
