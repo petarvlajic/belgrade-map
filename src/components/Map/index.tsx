@@ -78,8 +78,6 @@ const Map: FC<Props> = ({ searchStation, markers }) => {
   }
 
   const handlePinClick = (pinInfo: MarkerType) => {
-    if (isViewer) return;
-
     setPinInfoDetails(pinInfo);
     setIsInfoWindowOpen(true);
   };
@@ -222,21 +220,25 @@ const Map: FC<Props> = ({ searchStation, markers }) => {
                   <p className="font-semibold">Naziv stajalista:</p>
                   <p>{pinInfoDetails.name}</p>
                 </li>
-                <li className="flex gap-2">
-                  <p className="font-semibold">IP:</p>
-                  <p>{pinInfoDetails.ip}</p>
-                </li>
-                <li className="flex gap-2">
-                  <p className="font-semibold">Temperatura:</p>
-                  <p>{pinInfoDetails.temp}</p>
-                </li>
-                <li className="flex gap-2">
-                  <p className="font-semibold">Struja i Napon (HW):</p>
-                  <p>{pinInfoDetails.voltage}</p>
-                </li>
-                <li className="flex gap-2">
-                  <p className="font-semibold">Komentar:</p>
-                </li>
+                {!isViewer && (
+                  <>
+                    <li className="flex gap-2">
+                      <p className="font-semibold">IP:</p>
+                      <p>{pinInfoDetails.ip}</p>
+                    </li>
+                    <li className="flex gap-2">
+                      <p className="font-semibold">Temperatura:</p>
+                      <p>{pinInfoDetails.temp}</p>
+                    </li>
+                    <li className="flex gap-2">
+                      <p className="font-semibold">Struja i Napon (HW):</p>
+                      <p>{pinInfoDetails.voltage}</p>
+                    </li>
+                    <li className="flex gap-2">
+                      <p className="font-semibold">Komentar:</p>
+                    </li>
+                  </>
+                )}
                 <li className="flex gap-2">
                   <p className="font-semibold">Status</p>
                   <p>{pinInfoDetails.statusLabel}</p>
@@ -300,21 +302,25 @@ const Map: FC<Props> = ({ searchStation, markers }) => {
                   >
                     Restart
                   </button>
-                  <button
-                    className="bg-gray-300 rounded-md p-3 col-span-2 text-white font-bold"
-                    onClick={() => {
-                      openModal('add-comment-modal');
-                    }}
-                  >
-                    Dodaj komentar
-                  </button>
-                  <a
-                    href={`https://www.google.com/maps/place/${pinInfoDetails.gpsx},${pinInfoDetails.gpsy}`}
-                    target="_blank"
-                    className="bg-blue-500 rounded-md p-3 text-white font-bold  block text-center"
-                  >
-                    Putanja
-                  </a>
+                  {!isViewer && (
+                    <>
+                      <button
+                        className="bg-gray-300 rounded-md p-3 col-span-2 text-white font-bold"
+                        onClick={() => {
+                          openModal('add-comment-modal');
+                        }}
+                      >
+                        Dodaj komentar
+                      </button>
+                      <a
+                        href={`https://www.google.com/maps/place/${pinInfoDetails.gpsx},${pinInfoDetails.gpsy}`}
+                        target="_blank"
+                        className="bg-blue-500 rounded-md p-3 text-white font-bold  block text-center"
+                      >
+                        Putanja
+                      </a>
+                    </>
+                  )}
                   <a
                     href={`http://app.sodalis.rs/?id=${pinInfoDetails.id}`}
                     target="_blank"
