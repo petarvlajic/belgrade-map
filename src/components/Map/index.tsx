@@ -244,7 +244,7 @@ const Map: FC<Props> = ({ searchStation, markers }) => {
                   <p>{pinInfoDetails.statusLabel}</p>
                 </li>
               </ul>
-              {pinHistoryDetails?.length !== 0 && (
+              {pinHistoryDetails?.length !== 0 && !isViewer && (
                 <table className=" border-blue-500 border-collapse">
                   <thead>
                     <tr>
