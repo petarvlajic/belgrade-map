@@ -6,6 +6,7 @@ interface FormData {
   FixImageAfter: File | null;
   FixDescription: string;
   Id: number | undefined;
+  FixTypes: string[];
 }
 
 interface Props {
@@ -18,6 +19,7 @@ const AddOrderInfoForm: FC<Props> = ({ stationId }) => {
     FixImageAfter: null,
     FixDescription: '',
     Id: stationId,
+    FixTypes: [],
   });
 
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -30,11 +32,13 @@ const AddOrderInfoForm: FC<Props> = ({ stationId }) => {
     }
   };
 
-  const handleTextAreaChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
-    const { value } = event.target;
+  const handleMultiSelectChange = (event: ChangeEvent<HTMLSelectElement>) => {
+    const selectedOptions = Array.from(event.target.selectedOptions).map(
+      (option) => option.value
+    );
     setFormData((prevData) => ({
       ...prevData,
-      FixDescription: value,
+      FixTypes: selectedOptions,
     }));
   };
 
@@ -50,6 +54,9 @@ const AddOrderInfoForm: FC<Props> = ({ stationId }) => {
     if (formData.Id !== undefined) {
       formDataToSend.append('Id', formData.Id.toString());
     }
+    formData.FixTypes.forEach((type) => {
+      formDataToSend.append('FixTypes[]', type);
+    });
 
     try {
       console.log('object', formData);
@@ -67,7 +74,9 @@ const AddOrderInfoForm: FC<Props> = ({ stationId }) => {
   return (
     <form onSubmit={handleSubmit}>
       <div>
-        <label htmlFor="FixImageBefore">File 1:</label>
+        <label htmlFor="FixImageBefore" className="text-gray-900">
+          Slika pre:
+        </label>
 
         <div className="flex items-center justify-center w-full">
           <label
@@ -110,21 +119,51 @@ const AddOrderInfoForm: FC<Props> = ({ stationId }) => {
       </div>
       <div>
         <label
-          htmlFor="message"
-          className="block mb-2 text-sm font-medium text-gray-900 "
+          htmlFor="countries_multiple"
+          className="block my-2 text-sm font-medium text-gray-900"
         >
-          Komentar:
+          Tip kvara:
         </label>
-        <textarea
-          id="message"
-          onChange={handleTextAreaChange}
-          rows={4}
-          className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-          placeholder="Napisi komentar"
-        ></textarea>
+        <select
+          multiple
+          id="countries_multiple"
+          className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+          onChange={handleMultiSelectChange}
+          value={formData.FixTypes}
+        >
+          <option value="Infopanel ne dobija napajanje">
+            Infopanel ne dobija napajanje, nema ulicne rasvete
+          </option>
+          <option value="Stajaliste ponovo povezano">
+            Stajaliste ponovo povezano na ulicnu rasvetu
+          </option>
+          <option value="Restart">Restart</option>
+          <option value="Zamena DC - DC konvertora">
+            Zamena DC - DC konvertora
+          </option>
+          <option value="Zamena AC - DC konvertora">
+            Zamena AC - DC konvertora
+          </option>
+          <option value="Zamena Baterije">Zamena Baterije</option>
+          <option value="Zamena Racunara">Zamena Racunara</option>
+          <option value="Zamena HDMI/UTP kabla">Zamena HDMI/UTP kabla</option>
+          <option value="Zamena Playera">Zamena Playera</option>
+          <option value="Zamena Rutera">Zamena Rutera</option>
+          <option value="Zamena Hladjenja">Zamena Hladjenja</option>
+          <option value="Zamena Kabineta">Zamena Kabineta</option>
+          <option value="Zamena SD kartice">Zamena SD kartice</option>
+          <option value="Ugradjen Hardver">Ugradjen Hardver</option>
+          <option value="Zamena Panela">Zamena Panela</option>
+          <option value="Zamena Receiving kartice">
+            Zamena Receiving kartice
+          </option>
+          <option value="Zamena Lightboxa">Zamena Lightboxa</option>
+        </select>
       </div>
       <div>
-        <label htmlFor="FixImageBefore">File 2:</label>
+        <label htmlFor="FixImageBefore" className="text-gray-900">
+          Slika posle:
+        </label>
         <label
           htmlFor="FixImageAfter"
           className="flex flex-col items-center justify-center w-full h-40 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50  dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600"

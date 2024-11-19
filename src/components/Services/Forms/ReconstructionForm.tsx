@@ -1,7 +1,7 @@
 import { FormEvent, useState } from 'react';
 import fetchService from '../../../services/api';
 
-const HwRestartForm = () => {
+const ReconstructionForm = () => {
   const [stations, setStations] = useState<string>('');
   const [stationList, setStationList] = useState<string[]>([]);
 
@@ -20,7 +20,9 @@ const HwRestartForm = () => {
   };
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
-    if (confirm('KLIKOM NA OVO DUGME CETE HW RESTARTOVATI STANICE')) {
+    if (
+      confirm('KLIKOM NA OVO DUGME CETE POSTAVITI STANICU U REKONSTRUKCIJU')
+    ) {
       e.preventDefault();
       try {
         const queryParams = new URLSearchParams();
@@ -30,7 +32,7 @@ const HwRestartForm = () => {
 
         console.log(stationList);
         reqFormData.append('id', stationList as any);
-        reqFormData.append('command', 'HW');
+        reqFormData.append('command', 'REC');
 
         const response = await fetchService.post(`change-command`, reqFormData);
         if (response) {
@@ -40,7 +42,7 @@ const HwRestartForm = () => {
         console.error('Error submitting form:', error);
       }
     } else {
-      alert('Postavljanje stanice u HW je otkazano!');
+      alert('Postavljanje stanice u rekonstrukciju je otkazano!');
     }
   };
 
@@ -94,4 +96,4 @@ const HwRestartForm = () => {
   );
 };
 
-export default HwRestartForm;
+export default ReconstructionForm;

@@ -1,7 +1,7 @@
-import { FormEvent, useState } from 'react';
+import React, { FormEvent, useState } from 'react';
 import fetchService from '../../../services/api';
 
-const HwRestartForm = () => {
+const RestartStationForm = () => {
   const [stations, setStations] = useState<string>('');
   const [stationList, setStationList] = useState<string[]>([]);
 
@@ -19,8 +19,19 @@ const HwRestartForm = () => {
     setStationList(stationList.filter((stationId) => stationId !== id));
   };
 
+  const handleRestartAll = async () => {
+    if (confirm('KLIKOM NA OVO DUGME CETE RESTARTOVATI SVE UREDJAJE')) {
+      const response = await fetchService.get(`resetall`);
+      if (response) {
+        alert('Stanice uspesno restartovane!');
+      }
+    } else {
+      alert('Restartovanje stanica je otkazano!');
+    }
+  };
+
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
-    if (confirm('KLIKOM NA OVO DUGME CETE HW RESTARTOVATI STANICE')) {
+    if (confirm('KLIKOM NA OVO DUGME CETE RESTARTOVATI IZABRANE UREDJAJE')) {
       e.preventDefault();
       try {
         const queryParams = new URLSearchParams();
@@ -30,17 +41,17 @@ const HwRestartForm = () => {
 
         console.log(stationList);
         reqFormData.append('id', stationList as any);
-        reqFormData.append('command', 'HW');
+        reqFormData.append('command', 'RBT');
 
         const response = await fetchService.post(`change-command`, reqFormData);
         if (response) {
-          alert('Status stanice uspesno promenjen!');
+          alert('Status stanica uspesno promenjen!');
         }
       } catch (error) {
         console.error('Error submitting form:', error);
       }
     } else {
-      alert('Postavljanje stanice u HW je otkazano!');
+      alert('Restartovanje stanica je otkazano!');
     }
   };
 
@@ -87,11 +98,18 @@ const HwRestartForm = () => {
           type="submit"
           className={` focus:outline-none text-white font-medium rounded-lg text-sm px-5 py-2.5  ${'bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800'}`}
         >
-          Postavi
+          Restart
+        </button>
+        <button
+          type="button"
+          onClick={handleRestartAll}
+          className=" bg-blue-600 px-5 py-2.5 rounded-lg text-white font-medium text-sm focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+        >
+          Reboot svih online uredjaja
         </button>
       </div>
     </form>
   );
 };
 
-export default HwRestartForm;
+export default RestartStationForm;

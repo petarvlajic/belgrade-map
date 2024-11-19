@@ -24,13 +24,17 @@ export const getWorkOrders = async () =>
 export const getUsers = async () => await fetchService.get<User[]>('users');
 
 export const applyAmberAlert = async () => {
-  const formData = new FormData();
-  formData.append('id', `-1`);
-  formData.append('command', 'AMB');
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const { data } = await fetchService.post<any>('change-command', formData);
-  if (data.success) {
-    alert('Amber alert uspesno primenjen!');
+  if (confirm('KLIKOM NA OVO DUGME CETE PRIMENITI AMBER ALERT')) {
+    const formData = new FormData();
+    formData.append('id', `-1`);
+    formData.append('command', 'AMB');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { data } = await fetchService.post<any>('change-command', formData);
+    if (data.success) {
+      alert('Amber alert uspesno primenjen!');
+    }
+  } else {
+    alert('Primena amber alerta je otkazana!');
   }
 };
 

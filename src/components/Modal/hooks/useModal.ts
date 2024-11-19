@@ -9,7 +9,9 @@ type ModalKeys =
   | 'change-status'
   | 'get-logs'
   | 'hw-restart'
-  | 'plot-form';
+  | 'plot-form'
+  | 'restart-station'
+  | 'reconstruction-station';
 
 type ModalState = {
   openModal: (key: ModalKeys, state?: unknown, headline?: ReactElement) => void;

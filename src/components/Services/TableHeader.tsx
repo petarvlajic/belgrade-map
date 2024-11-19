@@ -1,14 +1,15 @@
 import { FC, useEffect, useState } from 'react';
-import fetchService from '../../services/api';
 import Modal from '../Modal';
 import { useModalStore } from '../Modal/hooks/useModal';
 import { User } from './types';
-import { applyAmberAlert, applyFlag, getLogs, getUsers } from './api';
+import { applyAmberAlert, applyFlag, getUsers } from './api';
 import AddWorkOrderForm from './Forms/AddWorkOrderForm';
 import ChangeMoreStationsForm from './Forms/ChangeMoreStationsForm';
 import GetLogsForm from './Forms/GetLogsForm';
 import HwRestartForm from './Forms/HwRestartForm';
 import PlotForm from './Forms/PlotForm';
+import RestartStationForm from './Forms/RestartStationForm';
+import ReconstructionForm from './Forms/ReconstructionForm';
 
 const TableHeader: FC = () => {
   const [users, setUsers] = useState<User[]>([]);
@@ -74,7 +75,7 @@ const TableHeader: FC = () => {
           </div>
         </form>
       </div>
-      <div className="w-full md:w-auto grid grid-cols-1 md:grid-cols-3 space-y-2 md:space-y-0 items-stretch md:items-center justify-end md:space-x-3 flex-shrink-0">
+      <div className="w-full md:w-auto grid grid-cols-1 md:grid-cols-3 space-y-2 md:space-y-0 items-stretch md:items-center justify-end gap-4 flex-shrink-0">
         <button
           type="button"
           onClick={() => {
@@ -178,9 +179,7 @@ const TableHeader: FC = () => {
         <button
           type="button"
           onClick={() => {
-            fetchService.get('resetall').then(() => {
-              alert('Stanice su uspesno restartovane');
-            });
+            openModal('restart-station');
           }}
           className="flex items-center justify-start text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-primary-600 dark:hover:bg-primary-700 focus:outline-none dark:focus:ring-primary-800"
         >
@@ -198,7 +197,26 @@ const TableHeader: FC = () => {
             />
             <path d="M8 4.466V.534a.25.25 0 0 0-.41-.192L5.23 2.308a.25.25 0 0 0 0 .384l2.36 1.966A.25.25 0 0 0 8 4.466" />
           </svg>
-          Restartuj sve stanice
+          Restart uredjaja
+        </button>
+        <button
+          type="button"
+          onClick={() => {
+            openModal('reconstruction-station');
+          }}
+          className="flex items-center justify-start text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-primary-600 dark:hover:bg-primary-700 focus:outline-none dark:focus:ring-primary-800"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            fill="currentColor"
+            className="bi bi-hammer mr-2"
+            viewBox="0 0 16 16"
+          >
+            <path d="M9.972 2.508a.5.5 0 0 0-.16-.556l-.178-.129a5 5 0 0 0-2.076-.783C6.215.862 4.504 1.229 2.84 3.133H1.786a.5.5 0 0 0-.354.147L.146 4.567a.5.5 0 0 0 0 .706l2.571 2.579a.5.5 0 0 0 .708 0l1.286-1.29a.5.5 0 0 0 .146-.353V5.57l8.387 8.873A.5.5 0 0 0 14 14.5l1.5-1.5a.5.5 0 0 0 .017-.689l-9.129-8.63c.747-.456 1.772-.839 3.112-.839a.5.5 0 0 0 .472-.334" />
+          </svg>
+          Rekonstrucija uredjaja
         </button>
         <button
           type="button"
@@ -316,6 +334,15 @@ const TableHeader: FC = () => {
       </Modal>
       <Modal modalKey="plot-form" headline="Preuzmi Plot">
         <PlotForm />
+      </Modal>
+      <Modal modalKey="restart-station" headline="Restartuj stanice">
+        <RestartStationForm />
+      </Modal>
+      <Modal
+        modalKey="reconstruction-station"
+        headline="Postavi stanicu u rekonstrukciju"
+      >
+        <ReconstructionForm />
       </Modal>
     </div>
   );
