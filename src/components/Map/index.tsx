@@ -280,9 +280,7 @@ const Map: FC<Props> = ({ searchStation, markers }) => {
                   </tbody>
                 </table>
               )}
-              {(pinInfoDetails.status === 1 ||
-                pinInfoDetails.status === 3 ||
-                pinInfoDetails.status === 2) && (
+              {pinInfoDetails.status <= 3 && pinInfoDetails.status >= 8 && (
                 <div className="grid  grid-cols-3 gap-3 justify-center my-3">
                   <button
                     className="bg-green-500 rounded-md p-3 text-white font-bold"

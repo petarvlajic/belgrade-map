@@ -39,13 +39,17 @@ export const applyAmberAlert = async () => {
 };
 
 export const applyFlag = async () => {
-  const formData = new FormData();
-  formData.append('id', `-1`);
-  formData.append('command', 'FLG');
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const { data } = await fetchService.post<any>('change-command', formData);
-  if (data.success) {
-    alert('Flag uspesno primenjen!');
+  if (confirm('KLIKOM NA OVO DUGME CETE PRIMENITI FLAG')) {
+    const formData = new FormData();
+    formData.append('id', `-1`);
+    formData.append('command', 'FLG');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { data } = await fetchService.post<any>('change-command', formData);
+    if (data.success) {
+      alert('Flag uspesno primenjen!');
+    }
+  } else {
+    alert('Primena flaga je otkazana!');
   }
 };
 
