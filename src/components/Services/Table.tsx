@@ -107,7 +107,7 @@ const Table: FC = () => {
         <figure className="max-w-lg">
           <img
             className="h-auto max-w-full rounded-lg"
-            src={`https://test.sodalis.rs/${workOrderState?.pathBefore}`}
+            src={`http://api.innsoldoo.com/${workOrderState?.pathBefore}`}
             alt="image description"
           />
           <figcaption className="mt-2 text-sm text-center text-gray-500 dark:text-gray-400">
@@ -120,7 +120,7 @@ const Table: FC = () => {
         <figure className="max-w-lg">
           <img
             className="h-auto max-w-full rounded-lg"
-            src={`https://test.sodalis.rs/${workOrderState?.pathAfter}`}
+            src={`http://api.innsoldoo.com/${workOrderState?.pathAfter}`}
             alt="image description"
           />
           <figcaption className="mt-2 text-sm text-center text-gray-500 dark:text-gray-400">

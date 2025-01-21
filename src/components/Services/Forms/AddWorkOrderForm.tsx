@@ -1,12 +1,14 @@
 import { FC, useState } from 'react';
 import { addWorkOrder } from '../api';
 import { User } from '../types';
+import { useModalStore } from '../../Modal/hooks/useModal';
 
 interface Props {
   users: User[];
 }
 
 const AddWorkOrderForm: FC<Props> = ({ users }) => {
+  const { closeModal } = useModalStore();
   const [formData, setFormData] = useState({
     userId: '',
     stationId: '',
@@ -35,6 +37,7 @@ const AddWorkOrderForm: FC<Props> = ({ users }) => {
       );
       // Reset form or show success message
       setFormData({ userId: '', stationId: '', description: '' });
+      closeModal();
     } catch (error) {
       console.error('Error submitting work order:', error);
     }
@@ -42,7 +45,7 @@ const AddWorkOrderForm: FC<Props> = ({ users }) => {
 
   return (
     <>
-      <form className="max-w-sm mx-auto" onSubmit={handleSubmit}>
+      <form className="" onSubmit={handleSubmit}>
         <div className="">
           <label
             htmlFor="userId"
@@ -58,11 +61,13 @@ const AddWorkOrderForm: FC<Props> = ({ users }) => {
             className="bg-gray-50 border capitalize border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
           >
             <option value="">Izaberi Korisnika</option>
-            {users.map((user) => (
-              <option key={user.ID} className="capitalize" value={user.ID}>
-                {user.Username}
-              </option>
-            ))}
+
+            {users.length > 0 &&
+              users?.map((user) => (
+                <option key={user.ID} className="capitalize" value={user.ID}>
+                  {user.Username}
+                </option>
+              ))}
           </select>
         </div>
         <div className="">

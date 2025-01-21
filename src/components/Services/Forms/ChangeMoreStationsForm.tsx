@@ -19,6 +19,9 @@ const statusInfoList: StatusInfo[] = [
   { statusId: 9, status: 'U grbu' },
   { statusId: 10, status: 'Nema 220' },
   { statusId: 11, status: 'baterija <25' },
+  { statusId: 13, status: 'Amber' },
+  { statusId: 14, status: 'Zastava' },
+  { statusId: 15, status: 'Rekonstrukcija' },
 ];
 
 const ChangeMoreStationsForm: FC = () => {
@@ -42,19 +45,23 @@ const ChangeMoreStationsForm: FC = () => {
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    try {
-      const queryParams = new URLSearchParams();
-      stationList.forEach((id) => queryParams.append('ids', id));
-      queryParams.append('status', selectedStatus);
+    if (confirm('Da li ste sigurni da zelite da promenite status stanica?')) {
+      try {
+        const queryParams = new URLSearchParams();
+        stationList.forEach((id) => queryParams.append('ids', id));
+        queryParams.append('status', selectedStatus);
 
-      const response = await fetchService.get(
-        `change-status?${queryParams.toString()}`
-      );
-      if (response) {
-        alert('Status stanica uspesno promenjen!');
+        const response = await fetchService.get(
+          `change-status?${queryParams.toString()}`
+        );
+        if (response) {
+          alert('Status stanica uspesno promenjen!');
+        }
+      } catch (error) {
+        console.error('Error submitting form:', error);
       }
-    } catch (error) {
-      console.error('Error submitting form:', error);
+    } else {
+      alert('Promena statusa stanica je otkazana!');
     }
   };
 
@@ -118,9 +125,9 @@ const ChangeMoreStationsForm: FC = () => {
 
       <button
         type="submit"
-        disabled={selectedStatus === 'Def'}
+        disabled={selectedStatus === 'Def' || stationList.length == 0}
         className={`my-5 focus:outline-none text-white font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 ${
-          selectedStatus === 'Def'
+          selectedStatus === 'Def' || stationList.length == 0
             ? 'bg-gray-400 cursor-not-allowed'
             : 'bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800'
         }`}

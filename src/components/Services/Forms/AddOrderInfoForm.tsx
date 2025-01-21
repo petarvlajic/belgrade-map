@@ -7,6 +7,7 @@ interface FormData {
   FixDescription: string;
   Id: number | undefined;
   FixTypes: string[];
+  RepairDateTime: string;
 }
 
 interface Props {
@@ -20,6 +21,7 @@ const AddOrderInfoForm: FC<Props> = ({ stationId }) => {
     FixDescription: '',
     Id: stationId,
     FixTypes: [],
+    RepairDateTime: '',
   });
 
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -30,6 +32,14 @@ const AddOrderInfoForm: FC<Props> = ({ stationId }) => {
         [name]: files[0],
       }));
     }
+  };
+
+  const handleDateTimeChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = event.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
   };
 
   const handleMultiSelectChange = (event: ChangeEvent<HTMLSelectElement>) => {
@@ -57,6 +67,7 @@ const AddOrderInfoForm: FC<Props> = ({ stationId }) => {
     formData.FixTypes.forEach((type) => {
       formDataToSend.append('FixTypes[]', type);
     });
+    formDataToSend.append('RepairDateTime', formData.RepairDateTime);
 
     try {
       console.log('object', formData);
@@ -159,6 +170,19 @@ const AddOrderInfoForm: FC<Props> = ({ stationId }) => {
           </option>
           <option value="Zamena Lightboxa">Zamena Lightboxa</option>
         </select>
+      </div>
+      <div>
+        <label htmlFor="RepairDateTime" className="text-gray-900 block my-2">
+          Datum i vreme popravke:
+        </label>
+        <input
+          type="datetime-local"
+          id="RepairDateTime"
+          name="RepairDateTime"
+          value={formData.RepairDateTime}
+          onChange={handleDateTimeChange}
+          className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+        />
       </div>
       <div>
         <label htmlFor="FixImageBefore" className="text-gray-900">

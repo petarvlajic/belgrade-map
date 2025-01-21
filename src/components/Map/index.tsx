@@ -280,54 +280,55 @@ const Map: FC<Props> = ({ searchStation, markers }) => {
                   </tbody>
                 </table>
               )}
-              {pinInfoDetails.status <= 3 && pinInfoDetails.status >= 8 && (
-                <div className="grid  grid-cols-3 gap-3 justify-center my-3">
-                  <button
-                    className="bg-green-500 rounded-md p-3 text-white font-bold"
-                    onClick={() => handleStationFunction('ON')}
-                  >
-                    Ukljuci
-                  </button>
-                  <button
-                    className="bg-red-500 rounded-md p-3 text-white font-bold"
-                    onClick={() => handleStationFunction('SLP')}
-                  >
-                    Iskljuci
-                  </button>
-                  <button
-                    className="bg-blue-500 rounded-md p-3 text-white font-bold"
-                    onClick={() => handleStationFunction('RBT')}
-                  >
-                    Restart
-                  </button>
-                  {!isViewer && (
-                    <>
-                      <button
-                        className="bg-gray-300 rounded-md p-3 col-span-2 text-white font-bold"
-                        onClick={() => {
-                          openModal('add-comment-modal');
-                        }}
-                      >
-                        Dodaj komentar
-                      </button>
-                      <a
-                        href={`https://www.google.com/maps/place/${pinInfoDetails.gpsx},${pinInfoDetails.gpsy}`}
-                        target="_blank"
-                        className="bg-blue-500 rounded-md p-3 text-white font-bold  block text-center"
-                      >
-                        Putanja
-                      </a>
-                    </>
-                  )}
-                  <a
-                    href={`http://app.sodalis.rs/?id=${pinInfoDetails.id}`}
-                    target="_blank"
-                    className="bg-blue-500 rounded-md p-3 text-white font-bold  block text-center col-span-3"
-                  >
-                    Prikaz Uzivo
-                  </a>
-                </div>
-              )}
+              {pinInfoDetails.status <= 3 ||
+                (pinInfoDetails.status >= 8 && (
+                  <div className="grid  grid-cols-3 gap-3 justify-center my-3">
+                    <button
+                      className="bg-green-500 rounded-md p-3 text-white font-bold"
+                      onClick={() => handleStationFunction('ON')}
+                    >
+                      Ukljuci
+                    </button>
+                    <button
+                      className="bg-red-500 rounded-md p-3 text-white font-bold"
+                      onClick={() => handleStationFunction('SLP')}
+                    >
+                      Iskljuci
+                    </button>
+                    <button
+                      className="bg-blue-500 rounded-md p-3 text-white font-bold"
+                      onClick={() => handleStationFunction('RBT')}
+                    >
+                      Restart
+                    </button>
+                    {!isViewer && (
+                      <>
+                        <button
+                          className="bg-gray-300 rounded-md p-3 col-span-2 text-white font-bold"
+                          onClick={() => {
+                            openModal('add-comment-modal');
+                          }}
+                        >
+                          Dodaj komentar
+                        </button>
+                        <a
+                          href={`https://www.google.com/maps/place/${pinInfoDetails.gpsx},${pinInfoDetails.gpsy}`}
+                          target="_blank"
+                          className="bg-blue-500 rounded-md p-3 text-white font-bold  block text-center"
+                        >
+                          Putanja
+                        </a>
+                      </>
+                    )}
+                    <a
+                      href={`http://app.sodalis.rs/?id=${pinInfoDetails.id}`}
+                      target="_blank"
+                      className="bg-blue-500 rounded-md p-3 text-white font-bold  block text-center col-span-3"
+                    >
+                      Prikaz Uzivo
+                    </a>
+                  </div>
+                ))}
 
               {(pinInfoDetails.status === 0 ||
                 pinInfoDetails.status === 7 ||
